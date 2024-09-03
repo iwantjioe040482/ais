@@ -1,0 +1,22 @@
+{
+  "name": "ais",
+  "version": "1.0.0",
+  "description": "Home Information System",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iwantjioe040482/ais.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iwantjioe040482/ais/issues"
+  },
+  "homepage": "https://github.com/iwantjioe040482/ais#readme",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
