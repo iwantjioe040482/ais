@@ -1,7 +1,18 @@
 const express = require('express');
+const mysql = require('mysql');
 const app = express();
 const port = process.env.PORT || 3000; // Use the port provided by the host or default to 3000
 
+// Set up the MySQL connection
+const dbConfig = {
+    host: 'localhost',
+    port: '3306',
+    user: 'pmauser',
+    password: 'Welcome@123',
+    database: 'tesnode'
+  };
+  const createConnection = () => mysql.createConnection(dbConfig);
+ 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
@@ -24,24 +35,122 @@ app.use(express.json());
 // Create (POST) a new item
 app.post('/items', (req, res) => {
   const newItem = req.body;
-  data.push(newItem);
-  res.status(201).json(newItem);
+  const connection = createConnection();
+
+  connection.connect((err) => {
+    if (err) 
+    {
+        res.status(500).json({ error: 'Failed to connect to the database' });
+        return console.error(err.message);
+    }
+  
+    if (typeof newItem === 'string') {
+        try {
+            item = JSON.parse(newItem);
+        } catch (error) {
+            console.error('Invalid JSON string:', error);
+            return;
+        }
+    } else {
+        item = newItem;
+    }
+
+    // insert statment
+    let sql = 'INSERT INTO items (name) VALUES (?)';
+    let values = [item.name];
+
+    // execute the insert statment
+    connection.query(sql, values, (err, results, fields) => {
+      if (err) 
+      {
+        res.status(500).json({ error: 'Failed to execute query' });
+        return console.error(err.message);
+      }
+  
+      console.log(`Inserted Rows: ${results.affectedRows}`);
+      // close the database connection
+      connection.end();
+      res.status(201).json(newItem);
+    });
+  
+  
+  });
+
 });
 
 // Read (GET) all items
 app.get('/items', (req, res) => {
-  res.json(data);
+
+    const connection = createConnection();
+
+    connection.connect((err) => {
+        if (err) 
+        {
+            res.status(500).json({ error: 'Failed to connect to the database' });
+            return console.error(err.message);
+        }
+      
+        // insert statment
+        let sql = 'select * from  items';
+    
+        // execute the insert statment
+        connection.query(sql,  (err, results, fields) => {
+          if (err) 
+          {
+            res.status(500).json({ error: 'Failed to execute query' });
+            return console.error(err.message);
+          }
+        
+          // Convert the query results to JSON
+          const jsonResult = JSON.stringify(results);
+          console.log(jsonResult);          
+
+          // close the database connection
+          connection.end();
+
+          res.json(results);
+        });
+      
+    });
+
 });
 
 // Read (GET) a specific item by ID
 app.get('/items/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const item = data.find((item) => item.id === id);
-  if (!item) {
-    res.status(404).json({ error: 'Item not found' });
-  } else {
-    res.json(item);
-  }
+
+    const connection = createConnection();
+    const id = parseInt(req.params.id);
+
+    connection.connect((err) => {
+        if (err) 
+        {
+            res.status(500).json({ error: 'Failed to connect to the database' });
+            return console.error(err.message);
+        }
+      
+        // insert statment
+        let sql = 'select * from  items where id=?';
+
+        // execute the insert statment
+        connection.query(sql, id, (err, results, fields) => {
+          if (err) 
+          {
+            res.status(404).json({ error: 'Item not found' });
+            return console.error(err.message);
+          }
+        
+          // Convert the query results to JSON
+          const jsonResult = JSON.stringify(results);
+          console.log(jsonResult);          
+
+          // close the database connection
+          connection.end();
+
+          res.json(results);
+        });
+      
+    });
+
 });
 
 // Update (PUT) an item by ID
