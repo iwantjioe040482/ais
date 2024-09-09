@@ -7,9 +7,9 @@ const port = process.env.PORT || 3000; // Use the port provided by the host or d
 const dbConfig = {
     host: 'localhost',
     port: '3306',
-    user: 'pmauser',
+    user: 'dbar',
     password: 'Welcome@123',
-    database: 'tesnode'
+    database: 'ais'
   };
   const createConnection = () => mysql.createConnection(dbConfig);
  
@@ -32,6 +32,50 @@ const data = [
 // Middleware to parse JSON requests
 app.use(express.json());
 
+app.post('/electricity', (req, res) => {
+  const newElectricity = req.body;
+  const connection = createConnection();
+
+  connection.connect((err) => {
+    if (err) 
+    {
+        res.status(500).json({ error: 'Failed to connect to the database' });
+        return console.error(err.message);
+    }
+  
+    if (typeof newElectricity === 'string') {
+        try {
+          electricity = JSON.parse(newElectricity);
+        } catch (error) {
+            console.error('Invalid JSON string:', error);
+            return;
+        }
+    } else {
+      electricity = newElectricity;
+    }
+
+    // insert statment
+    let sql = 'INSERT INTO ais.electricity (date,nelectricity_value) VALUES (?,?)';
+    let values = [electricity.date,electricity.electricity_value];
+
+    // execute the insert statment
+    connection.query(sql, values, (err, results, fields) => {
+      if (err) 
+      {
+        res.status(500).json({ error: 'Failed to execute query' });
+        return console.error(err.message);
+      }
+  
+      console.log(`Inserted Rows: ${results.affectedRows}`);
+      // close the database connection
+      connection.end();
+      res.status(201).json(newElectricity);
+    });
+  
+  
+  });
+
+});
 // Create (POST) a new item
 app.post('/items', (req, res) => {
   const newItem = req.body;
