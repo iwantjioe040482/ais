@@ -32,6 +32,90 @@ const data = [
 // Middleware to parse JSON requests
 app.use(express.json());
 
+
+app.post('//water', (req, res) => {
+  const newWater = req.body;
+  const connection = createConnection();
+
+  connection.connect((err) => {
+    if (err) 
+    {
+        res.status(500).json({ error: 'Failed to connect to the database' });
+        return console.error(err.message);
+    }
+  
+    if (typeof newWater === 'string') {
+        try {
+          water = JSON.parse(newWater);
+        } catch (error) {
+            console.error('Invalid JSON string:', error);
+            return;
+        }
+    } else {
+      water = newWater;
+    }
+
+    // insert statment
+    let sql = 'INSERT INTO tesnode.water (date,water_value) VALUES (?,?)';
+    let values = [water.date,water.water_value];
+
+    // execute the insert statment
+    connection.query(sql, values, (err, results, fields) => {
+      if (err) 
+      {
+        res.status(500).json({ error: 'Failed to execute query' });
+        return console.error(err.message);
+      }
+  
+      console.log(`Inserted Rows: ${results.affectedRows}`);
+      // close the database connection
+      connection.end();
+      res.status(201).json(newWater);
+    });
+  
+  
+  });
+
+});
+
+
+app.get('/water', (req, res) => {
+
+  const connection = createConnection();
+
+  connection.connect((err) => {
+      if (err) 
+      {
+          res.status(500).json({ error: 'Failed to connect to the database' });
+          return console.error(err.message);
+      }
+    
+      // insert statment
+      let sql = 'select id,DATE_FORMAT(date, "%Y-%m-%d") AS date,water_value from  water"';
+  
+      // execute the insert statment
+      connection.query(sql,  (err, results, fields) => {
+        if (err) 
+        {
+          res.status(500).json({ error: 'Failed to execute query' });
+          return console.error(err.message);
+        }
+      
+        // Convert the query results to JSON
+        const jsonResult = JSON.stringify(results);
+        console.log(jsonResult);          
+
+        // close the database connection
+        connection.end();
+
+        res.json(results);
+      });
+    
+  });
+
+});
+
+
 app.post('/electricity', (req, res) => {
   const newElectricity = req.body;
   const connection = createConnection();
@@ -90,7 +174,7 @@ app.get('/electricity', (req, res) => {
       }
     
       // insert statment
-      let sql = 'select * from  electricity';
+      let sql = 'select id,DATE_FORMAT(date, "%Y-%m-%d") AS date,electricity_value from  electricity';
   
       // execute the insert statment
       connection.query(sql,  (err, results, fields) => {
