@@ -33,7 +33,7 @@ const data = [
 app.use(express.json());
 
 
-app.post('//water', (req, res) => {
+app.post('/water', (req, res) => {
   const newWater = req.body;
   const connection = createConnection();
 
