@@ -7,9 +7,9 @@ const port = process.env.PORT || 3000; // Use the port provided by the host or d
 const dbConfig = {
     host: 'localhost',
     port: '3306',
-    user: 'dbar',
-    password: 'Welcome@123',
-    database: 'ais'
+    user: 'pmauser',
+    password: 'Welcone@123',
+    database: 'tesnode'
   };
   const createConnection = () => mysql.createConnection(dbConfig);
  
@@ -55,7 +55,7 @@ app.post('/electricity', (req, res) => {
     }
 
     // insert statment
-    let sql = 'INSERT INTO ais.electricity (date,nelectricity_value) VALUES (?,?)';
+    let sql = 'INSERT INTO tesnode.electricity (date,electricity_value) VALUES (?,?)';
     let values = [electricity.date,electricity.electricity_value];
 
     // execute the insert statment
@@ -76,6 +76,46 @@ app.post('/electricity', (req, res) => {
   });
 
 });
+
+// Read (GET) all items
+app.get('/electricity', (req, res) => {
+
+  const connection = createConnection();
+
+  connection.connect((err) => {
+      if (err) 
+      {
+          res.status(500).json({ error: 'Failed to connect to the database' });
+          return console.error(err.message);
+      }
+    
+      // insert statment
+      let sql = 'select * from  electricity';
+  
+      // execute the insert statment
+      connection.query(sql,  (err, results, fields) => {
+        if (err) 
+        {
+          res.status(500).json({ error: 'Failed to execute query' });
+          return console.error(err.message);
+        }
+      
+        // Convert the query results to JSON
+        const jsonResult = JSON.stringify(results);
+        console.log(jsonResult);          
+
+        // close the database connection
+        connection.end();
+
+        res.json(results);
+      });
+    
+  });
+
+});
+
+
+
 // Create (POST) a new item
 app.post('/items', (req, res) => {
   const newItem = req.body;
