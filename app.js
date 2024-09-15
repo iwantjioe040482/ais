@@ -56,7 +56,7 @@ app.post('/water', (req, res) => {
     }
 
     // insert statment
-    let sql = 'INSERT INTO tesnode.water (date,water_value) VALUES (?,?)';
+    let sql = 'INSERT INTO ais.water (date,water_value) VALUES (?,?)';
     let values = [water.date,water.water_value];
 
     // execute the insert statment
@@ -79,6 +79,41 @@ app.post('/water', (req, res) => {
 });
 
 
+app.get('/insurance', (req, res) => {
+
+  const connection = createConnection();
+
+  connection.connect((err) => {
+      if (err) 
+      {
+          res.status(500).json({ error: 'Failed to connect to the database' });
+          return console.error(err.message);
+      }
+    
+      // insert statment
+      let sql = 'select r.id,r.name,r.end_to,DATEDIFF(CURDATE(), r.end_to) as remaining from recurring r where r.type_id ="1"';
+  
+      // execute the insert statment
+      connection.query(sql,  (err, results, fields) => {
+        if (err) 
+        {
+          res.status(500).json({ error: 'Failed to execute query' });
+          return console.error(err.message);
+        }
+      
+        // Convert the query results to JSON
+        const jsonResult = JSON.stringify(results);
+        console.log(jsonResult);          
+
+        // close the database connection
+        connection.end();
+
+        res.json(results);
+      });
+    
+  });
+
+});
 app.get('/water', (req, res) => {
 
   const connection = createConnection();
@@ -139,7 +174,7 @@ app.post('/electricity', (req, res) => {
     }
 
     // insert statment
-    let sql = 'INSERT INTO tesnode.electricity (date,electricity_value) VALUES (?,?)';
+    let sql = 'INSERT INTO ais.electricity (date,electricity_value) VALUES (?,?)';
     let values = [electricity.date,electricity.electricity_value];
 
     // execute the insert statment
