@@ -9,7 +9,7 @@ const dbConfig = {
     port: '3306',
     user: 'dba',
     password: 'Welcome123',
-    database: ''
+    database: 'ais'
   };
   const createConnection = () => mysql.createConnection(dbConfig);
  
@@ -91,9 +91,9 @@ app.get('/insurance', (req, res) => {
       }
     
       // insert statment
-      let sql = 'select r.id,r.name,r.end_to,DATEDIFF(CURDATE(), r.end_to) as remaining from ais.recurring r where r.type_id ="1"';
+      let sql = 'select r.recurring_id,r.name,r.end_to,DATEDIFF(CURDATE(), r.end_to) as remaining from ais.recurring r where r.type_id ="1"';
   
-      // execute the insert statment
+      // execute the insert statmentßß
       connection.query(sql,  (err, results, fields) => {
         if (err) 
         {
