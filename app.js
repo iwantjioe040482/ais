@@ -9,7 +9,7 @@ const dbConfig = {
     port: '3306',
     user: 'dba',
     password: 'Welcone123',
-    database: 'ais'
+    database: 'mysql'
   };
   const createConnection = () => mysql.createConnection(dbConfig);
  
