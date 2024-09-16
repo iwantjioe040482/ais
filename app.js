@@ -44,7 +44,7 @@ app.get('/assets', (req, res) => {
       }
     
       // insert statment
-      let sql = 'select a.asset_id,a.asset_name,t.type_asset,u.name,a.est_value,(select DATE_FORMAT(tr.time_stamp, "%Y-%m-%d %H:%i:%s") AS time_stamp from tr_asset_history tr  where tr.asset_id=a.asset_id order by tr.time_stamp desc limit 1) as last_update, ' +
+      let sql = 'select a.asset_id as id,a.asset_name,t.type_asset,u.name,a.est_value,(select DATE_FORMAT(tr.time_stamp, "%Y-%m-%d %H:%i:%s") AS time_stamp from tr_asset_history tr  where tr.asset_id=a.asset_id order by tr.time_stamp desc limit 1) as last_update, ' +
           '(select l.location_name from tr_asset_history tr inner join mst_location l on l.location_id=tr.location_id where tr.asset_id=a.asset_id order by tr.time_stamp desc limit 1) as last_location from ais.mst_asset a ' +
           'inner join mst_user u on u.user_id =a.user_id ' +
           'inner join mst_type_asset t on t.type_id =a.type_id ';
