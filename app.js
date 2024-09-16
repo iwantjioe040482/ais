@@ -91,7 +91,7 @@ app.get('/insurance', (req, res) => {
       }
     
       // insert statment
-      let sql = 'select r.recurring_id,r.name,r.end_to,DATEDIFF(r.end_to,CURDATE()) as remaining from ais.recurring r where r.type_id ="1"';
+      let sql = 'select r.recurring_id as id,r.name,r.end_to,DATEDIFF(r.end_to,CURDATE()) as remaining from ais.recurring r where r.type_id ="1"';
   
       // execute the insert statmentßß
       connection.query(sql,  (err, results, fields) => {
