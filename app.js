@@ -32,6 +32,81 @@ const data = [
 // Middleware to parse JSON requests
 app.use(express.json());
 
+app.get('/assets', (req, res) => {
+
+  const connection = createConnection();
+
+  connection.connect((err) => {
+      if (err) 
+      {
+          res.status(500).json({ error: 'Failed to connect to the database' });
+          return console.error(err.message);
+      }
+    
+      // insert statment
+      let sql = 'select a.asset_id,a.asset_name,t.type_asset,u.name,a.est_value,(select tr.time_stamp from tr_asset_history tr  where tr.asset_id=a.asset_id order by tr.time_stamp desc limit 1) as last_update, ' +
+          '(select l.location_name from tr_asset_history tr inner join mst_location l on l.location_id=tr.location_id where tr.asset_id=a.asset_id order by tr.time_stamp desc limit 1) as last_location from ais.mst_asset a ' +
+          'inner join mst_user u on u.user_id =a.user_id ' +
+          'inner join mst_type_asset t on t.type_id =a.type_id ';
+  
+      // execute the insert statmentßß
+      connection.query(sql,  (err, results, fields) => {
+        if (err) 
+        {
+          res.status(500).json({ error: 'Failed to execute query' });
+          return console.error(err.message);
+        }
+      
+        // Convert the query results to JSON
+        const jsonResult = JSON.stringify(results);
+        console.log(jsonResult);          
+
+        // close the database connection
+        connection.end();
+
+        res.json(results);
+      });
+    
+  });
+
+});
+
+
+app.get('/insurance', (req, res) => {
+
+  const connection = createConnection();
+
+  connection.connect((err) => {
+      if (err) 
+      {
+          res.status(500).json({ error: 'Failed to connect to the database' });
+          return console.error(err.message);
+      }
+    
+      // insert statment
+      let sql = 'select r.recurring_id as id,r.name,DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,DATEDIFF(r.end_to,CURDATE()) as remaining from ais.recurring r where r.type_id ="1"';
+  
+      // execute the insert statmentßß
+      connection.query(sql,  (err, results, fields) => {
+        if (err) 
+        {
+          res.status(500).json({ error: 'Failed to execute query' });
+          return console.error(err.message);
+        }
+      
+        // Convert the query results to JSON
+        const jsonResult = JSON.stringify(results);
+        console.log(jsonResult);          
+
+        // close the database connection
+        connection.end();
+
+        res.json(results);
+      });
+    
+  });
+
+});
 
 app.post('/water', (req, res) => {
   const newWater = req.body;
@@ -79,41 +154,6 @@ app.post('/water', (req, res) => {
 });
 
 
-app.get('/insurance', (req, res) => {
-
-  const connection = createConnection();
-
-  connection.connect((err) => {
-      if (err) 
-      {
-          res.status(500).json({ error: 'Failed to connect to the database' });
-          return console.error(err.message);
-      }
-    
-      // insert statment
-      let sql = 'select r.recurring_id as id,r.name,DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,DATEDIFF(r.end_to,CURDATE()) as remaining from ais.recurring r where r.type_id ="1"';
-  
-      // execute the insert statmentßß
-      connection.query(sql,  (err, results, fields) => {
-        if (err) 
-        {
-          res.status(500).json({ error: 'Failed to execute query' });
-          return console.error(err.message);
-        }
-      
-        // Convert the query results to JSON
-        const jsonResult = JSON.stringify(results);
-        console.log(jsonResult);          
-
-        // close the database connection
-        connection.end();
-
-        res.json(results);
-      });
-    
-  });
-
-});
 app.get('/water', (req, res) => {
 
   const connection = createConnection();
