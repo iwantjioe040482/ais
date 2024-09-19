@@ -71,6 +71,41 @@ app.get('/assets', (req, res) => {
 
 });
 
+app.get('/creditcard', (req, res) => {
+
+  const connection = createConnection();
+
+  connection.connect((err) => {
+      if (err) 
+      {
+          res.status(500).json({ error: 'Failed to connect to the database' });
+          return console.error(err.message);
+      }
+    
+      // insert statment
+      let sql = 'select r.recurring_id as id,r.name,DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,DATEDIFF(r.end_to,CURDATE()) as remaining,DATEDIFF(r.end_to,r.start_from)-1 as timeline from ais.recurring r where r.type_id ="2"';
+  
+      // execute the insert statmentßß
+      connection.query(sql,  (err, results, fields) => {
+        if (err) 
+        {
+          res.status(500).json({ error: 'Failed to execute query' });
+          return console.error(err.message);
+        }
+      
+        // Convert the query results to JSON
+        const jsonResult = JSON.stringify(results);
+        console.log(jsonResult);          
+
+        // close the database connection
+        connection.end();
+
+        res.json(results);
+      });
+    
+  });
+
+});
 
 app.get('/insurance', (req, res) => {
 
@@ -84,7 +119,7 @@ app.get('/insurance', (req, res) => {
       }
     
       // insert statment
-      let sql = 'select r.recurring_id as id,r.name,DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,DATEDIFF(r.end_to,CURDATE()) as remaining from ais.recurring r where r.type_id ="1"';
+      let sql = 'select r.recurring_id as id,r.name,DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,DATEDIFF(r.end_to,CURDATE()) as remaining,DATEDIFF(r.end_to,r.start_from)-1 as timeline from ais.recurring r where r.type_id ="1"';
   
       // execute the insert statmentßß
       connection.query(sql,  (err, results, fields) => {
