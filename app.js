@@ -83,7 +83,7 @@ app.get('/creditcard', (req, res) => {
       }
     
       // insert statment
-      let sql = 'select r.recurring_id as id,r.name,DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,DATEDIFF(r.end_to,CURDATE()) as remaining,DATEDIFF(r.end_to,r.start_from)-1 as timeline from ais.recurring r where r.type_id ="2" order by r.name';
+      let sql = 'select r.recurring_id as id,r.name,DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,DATEDIFF(r.end_to,CURDATE()) as remaining,DATEDIFF(r.end_to,r.start_from)-1 as timeline,u.name from ais.recurring r inner join ais.mst_user u on u.user_id=r.user_id where r.type_id ="2" order by r.name';
   
       // execute the insert statmentßß
       connection.query(sql,  (err, results, fields) => {
@@ -119,7 +119,7 @@ app.get('/insurance', (req, res) => {
       }
     
       // insert statment
-      let sql = 'select r.recurring_id as id,r.name,DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,DATEDIFF(r.end_to,CURDATE()) as remaining,DATEDIFF(r.end_to,r.start_from)-1 as timeline from ais.recurring r where r.type_id ="1"';
+      let sql = 'select r.recurring_id as id,r.name,DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,DATEDIFF(r.end_to,CURDATE()) as remaining,DATEDIFF(r.end_to,r.start_from)-1 as timeline,u.name from ais.recurring r inner join ais.mst_user u on u.user_id=r.user_id where r.type_id ="1"';
   
       // execute the insert statmentßß
       connection.query(sql,  (err, results, fields) => {
