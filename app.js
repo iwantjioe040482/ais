@@ -32,6 +32,43 @@ const data = [
 // Middleware to parse JSON requests
 app.use(express.json());
 
+
+app.get('/sparepart', (req, res) => {
+
+  const connection = createConnection();
+
+  connection.connect((err) => {
+      if (err) 
+      {
+          res.status(500).json({ error: 'Failed to connect to the database' });
+          return console.error(err.message);
+      }
+    
+      // insert statment
+      let sql = 'select p.part_id as id,p.part_name as name,p.part_number as sn,t.qty,t.location_id,DATE_FORMAT(t.timestanmp, "%Y-%m-%d %H:%i:%s") AS timestamp from  ais.mst_vehicle_part p inner join ais.tr_part_history t on t.part_id=p.part_id';
+  
+      // execute the insert statment
+      connection.query(sql,  (err, results, fields) => {
+        if (err) 
+        {
+          res.status(500).json({ error: 'Failed to execute query' });
+          return console.error(err.message);
+        }
+      
+        // Convert the query results to JSON
+        const jsonResult = JSON.stringify(results);
+        console.log(jsonResult);          
+
+        // close the database connection
+        connection.end();
+
+        res.json(results);
+      });
+    
+  });
+
+});
+
 app.get('/assets', (req, res) => {
 
   const connection = createConnection();
