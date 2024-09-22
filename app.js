@@ -45,7 +45,7 @@ app.get('/sparepart', (req, res) => {
       }
     
       // insert statment
-      let sql = 'select p.part_id as id,p.part_name as name,p.part_number as sn,t.qty,t.location_id,DATE_FORMAT(t.timestanmp, "%Y-%m-%d %H:%i:%s") AS timestamp from  ais.mst_vehicle_part p inner join ais.tr_part_history t on t.part_id=p.part_id';
+      let sql = 'select p.part_id as id,p.part_name as name,p.part_number as sn,t.qty,t.location_id,DATE_FORMAT(t.timestamp, "%Y-%m-%d %H:%i:%s") AS timestamp from  ais.mst_vehicle_part p inner join ais.tr_part_history t on t.part_id=p.part_id';
   
       // execute the insert statment
       connection.query(sql,  (err, results, fields) => {
