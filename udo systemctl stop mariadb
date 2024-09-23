@@ -1,0 +1,23 @@
+[0;1;31m×[0m mariadb.service - MariaDB 10.6.18 database server
+     Loaded: loaded (/lib/systemd/system/mariadb.service; enabled; vendor preset: enabled)
+     Active: [0;1;31mfailed[0m (Result: exit-code) since Fri 2024-09-20 23:43:11 WIB; 15s ago
+       Docs: man:mariadbd(8)
+             https://mariadb.com/kb/en/library/systemd/
+    Process: 3946 ExecStartPre=/usr/bin/install -m 755 -o mysql -g root -d /var/run/mysqld (code=exited, status=0/SUCCESS)
+    Process: 3947 ExecStartPre=/bin/sh -c systemctl unset-environment _WSREP_START_POSITION (code=exited, status=0/SUCCESS)
+    Process: 3949 ExecStartPre=/bin/sh -c [ ! -e /usr/bin/galera_recovery ] && VAR= ||   VAR=`cd /usr/bin/..; /usr/bin/galera_recovery`; [ $? -eq 0 ]   && systemctl set-environment _WSREP_START_POSITION=$VAR || exit 1 (code=exited, status=0/SUCCESS)
+    Process: 3978 ExecStart=/usr/sbin/mariadbd $MYSQLD_OPTS $_WSREP_NEW_CLUSTER $_WSREP_START_POSITION [0;1;31m(code=exited, status=1/FAILURE)[0m
+   Main PID: 3978 (code=exited, status=1/FAILURE)
+     Status: "MariaDB server is down"
+        CPU: 319ms
+
+Sep 20 23:43:11 orangepizero3 mariadbd[3978]: 2024-09-20 23:43:11 0 [ERROR] InnoDB: Set innodb_force_recovery=1 to ignore this and to permanently lose all changes to the tablespace.
+Sep 20 23:43:11 orangepizero3 mariadbd[3978]: 2024-09-20 23:43:11 0 [ERROR] InnoDB: Plugin initialization aborted with error Tablespace not found
+Sep 20 23:43:11 orangepizero3 mariadbd[3978]: 2024-09-20 23:43:11 0 [Note] InnoDB: Starting shutdown...
+Sep 20 23:43:11 orangepizero3 mariadbd[3978]: 2024-09-20 23:43:11 0 [ERROR] Plugin 'InnoDB' registration as a STORAGE ENGINE failed.
+Sep 20 23:43:11 orangepizero3 mariadbd[3978]: 2024-09-20 23:43:11 0 [Note] Plugin 'FEEDBACK' is disabled.
+Sep 20 23:43:11 orangepizero3 mariadbd[3978]: 2024-09-20 23:43:11 0 [ERROR] Unknown/unsupported storage engine: InnoDB
+Sep 20 23:43:11 orangepizero3 mariadbd[3978]: 2024-09-20 23:43:11 0 [ERROR] Aborting
+Sep 20 23:43:11 orangepizero3 systemd[1]: [0;1;39m[0;1;31m[0;1;39mmariadb.service: Main process exited, code=exited, status=1/FAILURE[0m
+Sep 20 23:43:11 orangepizero3 systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mmariadb.service: Failed with result 'exit-code'.[0m
+Sep 20 23:43:11 orangepizero3 systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start MariaDB 10.6.18 database server.[0m
