@@ -69,6 +69,52 @@ app.get('/part', (req, res) => {
 
 });
 
+// Create (POST) a new item
+app.post('/part', (req, res) => {
+  const newPart = req.body;
+  const connection = createConnection();
+
+  connection.connect((err) => {
+    if (err) 
+    {
+        res.status(500).json({ error: 'Failed to connect to the database' });
+        return console.error(err.message);
+    }
+  
+    if (typeof newPart === 'string') {
+        try {
+            part = JSON.parse(newPart);
+        } catch (error) {
+            console.error('Invalid JSON string:', error);
+            return;
+        }
+    } else {
+        part = newPart;
+    }
+
+    // insert statment
+    let sql = 'INSERT INTO mst_vehicle_part (part_name,part_number) VALUES (?,?)';
+    let values = [part.name,part.sn];
+
+    // execute the insert statment
+    connection.query(sql, values, (err, results, fields) => {
+      if (err) 
+      {
+        res.status(500).json({ error: 'Failed to execute query' });
+        return console.error(err.message);
+      }
+  
+      console.log(`Inserted Rows: ${results.affectedRows}`);
+      // close the database connection
+      connection.end();
+      res.status(201).json(newPart);
+    });
+  
+  
+  });
+
+});
+
 app.get('/location', (req, res) => {
 
   const connection = createConnection();
