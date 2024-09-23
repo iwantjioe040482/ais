@@ -33,6 +33,41 @@ const data = [
 app.use(express.json());
 
 
+app.get('/part', (req, res) => {
+
+  const connection = createConnection();
+
+  connection.connect((err) => {
+      if (err) 
+      {
+          res.status(500).json({ error: 'Failed to connect to the database' });
+          return console.error(err.message);
+      }
+    
+      // insert statment
+      let sql = 'select part_id as id,part_name as name,part_number as sn from mst_vehicle_part';
+  
+      // execute the insert statment
+      connection.query(sql,  (err, results, fields) => {
+        if (err) 
+        {
+          res.status(500).json({ error: 'Failed to execute query' });
+          return console.error(err.message);
+        }
+      
+        // Convert the query results to JSON
+        const jsonResult = JSON.stringify(results);
+        console.log(jsonResult);          
+
+        // close the database connection
+        connection.end();
+
+        res.json(results);
+      });
+    
+  });
+
+});
 
 app.get('/location', (req, res) => {
 
