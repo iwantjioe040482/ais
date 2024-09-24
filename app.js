@@ -32,6 +32,87 @@ const data = [
 // Middleware to parse JSON requests
 app.use(express.json());
 
+app.get('/parthome', (req, res) => {
+
+  const connection = createConnection();
+
+  connection.connect((err) => {
+      if (err) 
+      {
+          res.status(500).json({ error: 'Failed to connect to the database' });
+          return console.error(err.message);
+      }
+    
+      // insert statment
+      let sql = 'select part_id as id,part_name as name,part_number as sn from mst_vehicle_part where type_id="2"';
+  
+      // execute the insert statment
+      connection.query(sql,  (err, results, fields) => {
+        if (err) 
+        {
+          res.status(500).json({ error: 'Failed to execute query' });
+          return console.error(err.message);
+        }
+      
+        // Convert the query results to JSON
+        const jsonResult = JSON.stringify(results);
+        console.log(jsonResult);          
+
+        // close the database connection
+        connection.end();
+
+        res.json(results);
+      });
+    
+  });
+
+});
+
+app.post('/parthome', (req, res) => {
+  const newPart = req.body;
+  const connection = createConnection();
+
+  connection.connect((err) => {
+    if (err) 
+    {
+        res.status(500).json({ error: 'Failed to connect to the database' });
+        return console.error(err.message);
+    }
+  
+    if (typeof newPart === 'string') {
+        try {
+            part = JSON.parse(newPart);
+        } catch (error) {
+            console.error('Invalid JSON string:', error);
+            return;
+        }
+    } else {
+        part = newPart;
+    }
+
+    // insert statment
+    let sql = 'INSERT INTO mst_vehicle_part (part_name,part_number,type_id) VALUES (?,?,"2")';
+    let values = [part.name,part.sn];
+
+    // execute the insert statment
+    connection.query(sql, values, (err, results, fields) => {
+      if (err) 
+      {
+        res.status(500).json({ error: 'Failed to execute query' });
+        return console.error(err.message);
+      }
+  
+      console.log(`Inserted Rows: ${results.affectedRows}`);
+      // close the database connection
+      connection.end();
+      res.status(201).json(newPart);
+    });
+  
+  
+  });
+
+});
+
 
 app.get('/part', (req, res) => {
 
