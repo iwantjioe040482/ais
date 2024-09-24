@@ -45,7 +45,7 @@ app.get('/part', (req, res) => {
       }
     
       // insert statment
-      let sql = 'select part_id as id,part_name as name,part_number as sn from mst_vehicle_part';
+      let sql = 'select part_id as id,part_name as name,part_number as sn from mst_vehicle_part where type_id="1"';
   
       // execute the insert statment
       connection.query(sql,  (err, results, fields) => {
@@ -93,7 +93,7 @@ app.post('/part', (req, res) => {
     }
 
     // insert statment
-    let sql = 'INSERT INTO mst_vehicle_part (part_name,part_number) VALUES (?,?)';
+    let sql = 'INSERT INTO mst_vehicle_part (part_name,part_number,type_id) VALUES (?,?,"1")';
     let values = [part.name,part.sn];
 
     // execute the insert statment
