@@ -5,9 +5,9 @@ const port = process.env.PORT || 3000; // Use the port provided by the host or d
 
 // Set up the MySQL connection
 const dbConfig = {
-    host: 'localhost',
+    host: '172.17.12.127',
     port: '3306',
-    user: 'dba',
+    user: 'dbuser',
     password: 'Welcome123',
     database: 'ais'
   };
