@@ -436,7 +436,7 @@ connection.connect((err) => {
     }
   
     // insert statment
-    let sql = 'select priority_id,priority_name from mst_priority';
+    let sql = 'select priority_id as id,priority_name from mst_priority';
 
     // execute the insert statmentßß
     connection.query(sql,  (err, results, fields) => {
