@@ -438,6 +438,43 @@ connection.connect((err) => {
 
 });
 
+app.get('/coaexpense', (req, res) => {
+
+const connection = createConnection();
+
+connection.connect((err) => {
+    if (err)
+    {
+        res.status(500).json({ error: 'Failed to connect to the database' });
+        return console.error(err.message);
+    }
+  
+    // insert statment
+    let sql = 'select * from vw_CoaExpenses';
+
+    // execute the insert statmentßß
+    connection.query(sql,  (err, results, fields) => {
+      if (err)
+      {
+        res.status(500).json({ error: 'Failed to execute query' });
+        return console.error(err.message);
+      }
+    
+      // Convert the query results to JSON
+      const jsonResult = JSON.stringify(results);
+      console.log(jsonResult);
+
+      // close the database connection
+      connection.end();
+
+      res.json(results);
+    });
+  
+});
+
+});
+
+
 app.get('/creditcard', (req, res) => {
 
   //let err=recurringtransaction("creditcard");
