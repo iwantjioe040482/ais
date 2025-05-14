@@ -777,7 +777,7 @@ app.get('/water', (req, res) => {
       }
     
       // insert statment
-      let sql = 'select id,DATE_FORMAT(date, "%Y-%m-%d") AS date,water_value from  water';
+      let sql = 'select * from vw_water';
   
       // execute the insert statment
       connection.query(sql,  (err, results, fields) => {
