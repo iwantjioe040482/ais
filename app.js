@@ -860,7 +860,7 @@ app.get('/electricity', (req, res) => {
       }
     
       // insert statment
-      let sql = 'select id,DATE_FORMAT(date, "%Y-%m-%d") AS date,electricity_value from  electricity';
+      let sql = 'select * from vw_electricity';
   
       // execute the insert statment
       connection.query(sql,  (err, results, fields) => {
