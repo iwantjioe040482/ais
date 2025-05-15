@@ -982,7 +982,7 @@ app.get('/balance/:id', (req, res) => {
         }
       
         // insert statment
-        let sql = 'select Balance from  m_coa where coa_id=?';
+        let sql = 'select Balance from  mst_coa where coa_id=?';
 
         // execute the insert statment
         let icoadid;
