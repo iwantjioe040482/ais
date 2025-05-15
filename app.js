@@ -1000,7 +1000,7 @@ app.get('/balance/:id', (req, res) => {
               break;
         }
         console.log(id);
-        console.ldg(icoadid);
+        console.log(icoadid);
         connection.query(sql, icoadid, (err, results, fields) => {
           if (err) 
           {
