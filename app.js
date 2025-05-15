@@ -972,7 +972,7 @@ app.get('/items', (req, res) => {
 app.get('/balance/:id', (req, res) => {
 
     const connection = createConnection();
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
 
     connection.connect((err) => {
         if (err) 
