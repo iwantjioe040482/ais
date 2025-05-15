@@ -969,6 +969,58 @@ app.get('/items', (req, res) => {
 
 });
 
+app.get('/balance/:id', (req, res) => {
+
+    const connection = createConnection();
+    const id = parseInt(req.params.id);
+
+    connection.connect((err) => {
+        if (err) 
+        {
+            res.status(500).json({ error: 'Failed to connect to the database' });
+            return console.error(err.message);
+        }
+      
+        // insert statment
+        let sql = 'select Balance from  m_coa where coa_id=?';
+
+        // execute the insert statment
+        let icoadid;
+
+        switch (id)
+        {
+            case "Cash":
+              icoadid=1;
+              break;
+            case "Flazz":
+              icoadid=10;
+              break;
+            case "CIMB":
+              icoadid=3;
+              break;
+        }
+
+        connection.query(sql, icoadid, (err, results, fields) => {
+          if (err) 
+          {
+            res.status(404).json({ error: 'Balance not found' });
+            return console.error(err.message);
+          }
+        
+          // Convert the query results to JSON
+          const jsonResult = JSON.stringify(results);
+          console.log(jsonResult);          
+
+          // close the database connection
+          connection.end();
+
+          res.json(results);
+        });
+      
+    });
+
+});
+
 // Read (GET) a specific item by ID
 app.get('/items/:id', (req, res) => {
 
