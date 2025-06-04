@@ -1089,6 +1089,19 @@ app.get('/balance/:id', (req, res) => {
             case "CIMB":
               icoadid=3;
               break;
+            case "BCA":
+              icoadid=2;
+              break;
+            case "Octo":
+              icoadid=24;
+              break;
+            case "ShopeePay":
+              icoadid=7;
+              break;
+            case "GoPay":
+              icoadid=5;
+              break;
+
         }
         console.log(id);
         console.log(icoadid);
