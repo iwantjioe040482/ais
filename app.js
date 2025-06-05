@@ -595,6 +595,51 @@ app.post('/gopayexpense', (req, res) => {
 
 });
 
+app.post('/ovoexpense', (req, res) => {
+  const newCIMBExpense = req.body;
+  const connection = createConnection();
+
+  connection.connect((err) => {
+    if (err) 
+    {
+        res.status(500).json({ error: 'Failed to connect to the database' });
+        return console.error(err.message);
+    }
+  
+    if (typeof newCIMBExpense === 'string') {
+        try {
+            part = JSON.parse(newCIMBExpense);
+        } catch (error) {
+            console.error('Invalid JSON string:', error);
+            return;
+        }
+    } else {
+        part = newCIMBExpense;
+    }
+
+    // insert statment
+    let sql = 'CALL InsertOvoLedger (?,?,?,?)';
+    let values = [part.coa_id,part.description,part.total,part.priority_id];
+
+    // execute the insert statment
+    connection.query(sql, values, (err, results, fields) => {
+      if (err) 
+      {
+        res.status(500).json({ error: 'Failed to execute query' });
+        return console.error(err.message);
+      }
+  
+      console.log(`Inserted Rows: ${results.affectedRows}`);
+      // close the database connection
+      connection.end();
+      res.status(201).json(newCIMBExpense);
+    });
+  
+  
+  });
+
+});
+
 app.post('/octoexpense', (req, res) => {
   const newCIMBExpense = req.body;
   const connection = createConnection();
@@ -1189,6 +1234,9 @@ app.get('/balance/:id', (req, res) => {
               break;
             case "GoPay":
               icoadid=5;
+              break;
+            case "Ovo":
+              icoadid=38;
               break;
 
         }
