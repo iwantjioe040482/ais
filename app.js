@@ -1229,6 +1229,41 @@ app.get('/estelectricbill', (req, res) => {
 
 });
 
+app.get('/estwaterbill', (req, res) => {
+
+    const connection = createConnection();
+
+    connection.connect((err) => {
+        if (err) 
+        {
+            res.status(500).json({ error: 'Failed to connect to the database' });
+            return console.error(err.message);
+        }
+      
+        // insert statment
+        let sql = 'select waterbillest from  vw_estwaterbill';
+
+        connection.query(sql, (err, results, fields) => {
+          if (err) 
+          {
+            res.status(404).json({ error: 'waterbillest not found' });
+            return console.error(err.message);
+          }
+        
+          // Convert the query results to JSON
+          const jsonResult = JSON.stringify(results);
+          console.log(jsonResult);          
+
+          // close the database connection
+          connection.end();
+
+          res.json(results);
+        });
+      
+    });
+
+});
+
 app.get('/balance/:id', (req, res) => {
 
     const connection = createConnection();
