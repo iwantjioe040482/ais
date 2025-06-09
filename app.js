@@ -1194,6 +1194,41 @@ app.get('/items', (req, res) => {
 
 });
 
+app.get('/estelectricbill', (req, res) => {
+
+    const connection = createConnection();
+
+    connection.connect((err) => {
+        if (err) 
+        {
+            res.status(500).json({ error: 'Failed to connect to the database' });
+            return console.error(err.message);
+        }
+      
+        // insert statment
+        let sql = 'select electricbillest from  vw_estelectricbill';
+
+        connection.query(sql, (err, results, fields) => {
+          if (err) 
+          {
+            res.status(404).json({ error: 'electricbillest not found' });
+            return console.error(err.message);
+          }
+        
+          // Convert the query results to JSON
+          const jsonResult = JSON.stringify(results);
+          console.log(jsonResult);          
+
+          // close the database connection
+          connection.end();
+
+          res.json(results);
+        });
+      
+    });
+
+});
+
 app.get('/balance/:id', (req, res) => {
 
     const connection = createConnection();
