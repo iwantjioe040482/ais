@@ -1308,7 +1308,9 @@ app.get('/balance/:id', (req, res) => {
             case "Ovo":
               icoadid=38;
               break;
-
+            case "Dana":
+              icoadid=25;
+              break;
         }
         console.log(id);
         console.log(icoadid);
