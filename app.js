@@ -1311,6 +1311,9 @@ app.get('/balance/:id', (req, res) => {
             case "Dana":
               icoadid=25;
               break;
+            case "Allo Bank":
+              icoadid= 32;
+              break;
         }
         console.log(id);
         console.log(icoadid);
