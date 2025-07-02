@@ -44,1459 +44,925 @@ const data = [
 app.use(express.json());
 
 app.get('/parthome', async (req, res) => {
+  try {
+    const connection = await createConnection();
 
-  const connection = await createConnection();
-//  const connection = createConnection();
+    const [results] = await connection.query(
+      'SELECT part_id AS id, part_name AS name, part_number AS sn FROM mst_vehicle_part WHERE type_id = "2"'
+    );
 
-  await connection.connect(async (err) => {
-      if (err) 
-      {
-          res.status(500).json({ error: 'Failed to connect to the database' });
-          return console.error(err.message);
-      }
-    
-      // insert statment
-      let sql = 'select part_id as id,part_name as name,part_number as sn from mst_vehicle_part where type_id="2"';
-  
-      // execute the insert statment
-      await connection.query(sql,  (err, results, fields) => {
-        if (err) 
-        {
-          res.status(500).json({ error: 'Failed to execute query' });
-          return console.error(err.message);
-        }
-      
-        // Convert the query results to JSON
-        const jsonResult = JSON.stringify(results);
-        console.log(jsonResult);          
+    console.log(JSON.stringify(results));
 
-        // close the database connection
-        connection.end();
+    await connection.end();
 
-        res.json(results);
-      });
-    
-  });
-
+    res.json(results);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Failed to fetch part data' });
+  }
 });
 
 app.post('/parthome', async (req, res) => {
-  const newPart = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+  try {
+    const connection = await createConnection();
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newPart === 'string') {
-        try {
-            part = JSON.parse(newPart);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newPart;
-    }
+    const part = typeof req.body === 'string'
+      ? JSON.parse(req.body)
+      : req.body;
 
-    // insert statment
-    let sql = 'INSERT INTO mst_vehicle_part (part_name,part_number,type_id) VALUES (?,?,"2")';
-    let values = [part.name,part.sn];
+    const sql = 'INSERT INTO mst_vehicle_part (part_name, part_number, type_id) VALUES (?, ?, "2")';
+    const values = [part.name, part.sn];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newPart);
-    });
-  
-  
-  });
+    const [result] = await connection.query(sql, values);
 
+    console.log(`Inserted Rows: ${result.affectedRows}`);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Failed to insert part' });
+  }
 });
 
 
 app.get('/part', async (req, res) => {
+  try {
+    const connection = await createConnection();
 
-  const connection = await createConnection();
-  //const connection = createConnection();
+    const [results] = await connection.query(
+      'SELECT part_id AS id, part_name AS name, part_number AS sn FROM mst_vehicle_part WHERE type_id = "1"'
+    );
 
-  connection.connect((err) => {
-      if (err) 
-      {
-          res.status(500).json({ error: 'Failed to connect to the database' });
-          return console.error(err.message);
-      }
-    
-      // insert statment
-      let sql = 'select part_id as id,part_name as name,part_number as sn from mst_vehicle_part where type_id="1"';
-  
-      // execute the insert statment
-      connection.query(sql,  (err, results, fields) => {
-        if (err) 
-        {
-          res.status(500).json({ error: 'Failed to execute query' });
-          return console.error(err.message);
-        }
-      
-        // Convert the query results to JSON
-        const jsonResult = JSON.stringify(results);
-        console.log(jsonResult);          
+    console.log(JSON.stringify(results));
 
-        // close the database connection
-        connection.end();
+    await connection.end();
 
-        res.json(results);
-      });
-    
-  });
-
+    res.json(results);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Failed to fetch parts' });
+  }
 });
 
+
 // Create (POST) a new item
-app.post('/part',async  (req, res) => {
-  const newPart = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+app.post('/part', async (req, res) => {
+  try {
+    const connection = await createConnection();
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newPart === 'string') {
-        try {
-            part = JSON.parse(newPart);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newPart;
-    }
+    const part = typeof req.body === 'string'
+      ? JSON.parse(req.body)
+      : req.body;
 
-    // insert statment
-    let sql = 'INSERT INTO mst_vehicle_part (part_name,part_number,type_id) VALUES (?,?,"1")';
-    let values = [part.name,part.sn];
+    const sql = 'INSERT INTO mst_vehicle_part (part_name, part_number, type_id) VALUES (?, ?, "1")';
+    const values = [part.name, part.sn];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newPart);
-    });
-  
-  
-  });
+    const [result] = await connection.query(sql, values);
 
+    console.log(`Inserted Rows: ${result.affectedRows}`);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Failed to insert part' });
+  }
 });
 
 app.get('/location', async (req, res) => {
+  try {
+    const connection = await createConnection();
 
-  const connection = await createConnection();
-  //const connection = createConnection();
+    const sql = 'SELECT location_id AS id, location_name AS name FROM mst_location';
+    const [results] = await connection.query(sql);
 
-  connection.connect((err) => {
-      if (err) 
-      {
-          res.status(500).json({ error: 'Failed to connect to the database' });
-          return console.error(err.message);
-      }
-    
-      // insert statment
-      let sql = 'select location_id as id,location_name as name from mst_location';
-  
-      // execute the insert statment
-      connection.query(sql,  (err, results, fields) => {
-        if (err) 
-        {
-          res.status(500).json({ error: 'Failed to execute query' });
-          return console.error(err.message);
-        }
-      
-        // Convert the query results to JSON
-        const jsonResult = JSON.stringify(results);
-        console.log(jsonResult);          
+    console.log(JSON.stringify(results));
 
-        // close the database connection
-        connection.end();
+    await connection.end();
 
-        res.json(results);
-      });
-    
-  });
-
+    res.json(results);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Failed to fetch locations' });
+  }
 });
-
 app.get('/sparepart', async (req, res) => {
+  try {
+    const connection = await createConnection();
 
-  const connection = await createConnection();
-  //const connection = createConnection();
+    const sql = `
+      SELECT 
+        p.part_id AS id,
+        p.part_name AS name,
+        COALESCE(p.part_number, "") AS sn,
+        t.qty,
+        t.location_id,
+        l.location_name,
+        DATE_FORMAT(t.timestamp, "%Y-%m-%d %H:%i:%s") AS timestamp
+      FROM ais.mst_vehicle_part p
+      INNER JOIN ais.tr_part_history t ON t.part_id = p.part_id
+      INNER JOIN mst_location l ON l.location_id = t.location_id
+    `;
 
-  connection.connect((err) => {
-      if (err) 
-      {
-          res.status(500).json({ error: 'Failed to connect to the database' });
-          return console.error(err.message);
-      }
-    
-      // insert statment
-      let sql = 'select p.part_id as id,p.part_name as name,coalesce(p.part_number,"") as sn,t.qty,t.location_id,l.location_name,DATE_FORMAT(t.timestamp, "%Y-%m-%d %H:%i:%s") AS timestamp from  ais.mst_vehicle_part p inner join ais.tr_part_history t on t.part_id=p.part_id inner join mst_location l on l.location_id=t.location_id';
-  
-      // execute the insert statment
-      connection.query(sql,  (err, results, fields) => {
-        if (err) 
-        {
-          res.status(500).json({ error: 'Failed to execute query' });
-          return console.error(err.message);
-        }
-      
-        // Convert the query results to JSON
-        const jsonResult = JSON.stringify(results);
-        console.log(jsonResult);          
+    const [results] = await connection.query(sql);
 
-        // close the database connection
-        connection.end();
+    console.log(JSON.stringify(results));
 
-        res.json(results);
-      });
-    
-  });
+    await connection.end();
 
+    res.json(results);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Failed to fetch spare parts' });
+  }
 });
-
 app.get('/assets', async (req, res) => {
+  try {
+    const connection = await createConnection();
 
-  const connection = await createConnection();
-  //const connection = createConnection();
+    const sql = `
+      SELECT 
+        a.asset_id AS id,
+        a.asset_name,
+        t.type_asset,
+        u.name,
+        a.est_value,
+        (
+          SELECT DATE_FORMAT(tr.time_stamp, "%Y-%m-%d %H:%i:%s") 
+          FROM tr_asset_history tr  
+          WHERE tr.asset_id = a.asset_id 
+          ORDER BY tr.time_stamp DESC 
+          LIMIT 1
+        ) AS last_update,
+        (
+          SELECT l.location_name 
+          FROM tr_asset_history tr 
+          INNER JOIN mst_location l ON l.location_id = tr.location_id 
+          WHERE tr.asset_id = a.asset_id 
+          ORDER BY tr.time_stamp DESC 
+          LIMIT 1
+        ) AS last_location,
+        t.asset_icon 
+      FROM ais.mst_asset a 
+      INNER JOIN mst_user u ON u.user_id = a.user_id 
+      INNER JOIN mst_type_asset t ON t.type_id = a.type_id  
+      ORDER BY a.est_value DESC
+    `;
 
-  connection.connect((err) => {
-      if (err) 
-      {
-          res.status(500).json({ error: 'Failed to connect to the database' });
-          return console.error(err.message);
-      }
-    
-      // insert statment
-      let sql = 'select a.asset_id as id,a.asset_name,t.type_asset,u.name,a.est_value,(select DATE_FORMAT(tr.time_stamp, "%Y-%m-%d %H:%i:%s") AS time_stamp from tr_asset_history tr  where tr.asset_id=a.asset_id order by tr.time_stamp desc limit 1) as last_update, ' +
-          '(select l.location_name from tr_asset_history tr inner join mst_location l on l.location_id=tr.location_id where tr.asset_id=a.asset_id order by tr.time_stamp desc limit 1) as last_location,t.asset_icon from ais.mst_asset a ' +
-          'inner join mst_user u on u.user_id =a.user_id ' +
-          'inner join mst_type_asset t on t.type_id =a.type_id  order by a.est_value desc';
-  
-      // execute the insert statmentßß
-      connection.query(sql,  (err, results, fields) => {
-        if (err) 
-        {
-          res.status(500).json({ error: 'Failed to execute query' });
-          return console.error(err.message);
-        }
-      
-        // Convert the query results to JSON
-        const jsonResult = JSON.stringify(results);
-        console.log(jsonResult);          
+    const [results] = await connection.query(sql);
 
-        // close the database connection
-        connection.end();
+    console.log(JSON.stringify(results));
 
-        res.json(results);
-      });
-    
-  });
+    await connection.end();
 
+    res.json(results);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Failed to fetch assets' });
+  }
 });
 
-async function recurringtransaction(ssparams)
-{
-  var sql="";
+async function recurringtransaction(ssparams) {
+  let sql = '';
 
-  const connection = await createConnection();
-  //const connection = createConnection();
+  switch (ssparams) {
+    case "tax":
+      sql = `
+        SELECT r.recurring_id AS id, r.name,
+          DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,
+          DATEDIFF(r.end_to, CURDATE()) AS remaining,
+          DATEDIFF(r.end_to, r.start_from) - 1 AS timeline,
+          u.name AS username
+        FROM ais.recurring r
+        INNER JOIN ais.mst_user u ON u.user_id = r.user_id
+        WHERE r.type_id = "3"
+        ORDER BY r.name
+      `;
+      break;
+    case "insurance":
+      sql = `
+        SELECT r.recurring_id AS id, r.name,
+          DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,
+          DATEDIFF(r.end_to, CURDATE()) AS remaining,
+          DATEDIFF(r.end_to, r.start_from) - 1 AS timeline,
+          u.name AS username
+        FROM ais.recurring r
+        INNER JOIN ais.mst_user u ON u.user_id = r.user_id
+        WHERE r.type_id = "1"
+        ORDER BY r.name
+      `;
+      break;
+    case "creditcard":
+      sql = `
+        SELECT r.recurring_id AS id, r.name,
+          DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,
+          DATEDIFF(r.end_to, CURDATE()) AS remaining,
+          DATEDIFF(r.end_to, r.start_from) - 1 AS timeline,
+          u.name AS username
+        FROM ais.recurring r
+        INNER JOIN ais.mst_user u ON u.user_id = r.user_id
+        WHERE r.type_id = "2"
+        ORDER BY r.name
+      `;
+      break;
+    default:
+      throw new Error("Invalid ssparams value");
+  }
 
-  connection.connect((err) => {
-      if (err) 
-      {
-          return 'Failed to connect to the database';
-      }
-
-      switch (ssparams) {
-        case "tax":
-          sql = 'select r.recurring_id as id,r.name,DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,DATEDIFF(r.end_to,CURDATE()) as remaining,DATEDIFF(r.end_to,r.start_from)-1 as timeline,u.name as username from ais.recurring r inner join ais.mst_user u on u.user_id=r.user_id where r.type_id ="3" order by r.name';
-          break;
-        case "insurance":
-          sql = 'select r.recurring_id as id,r.name,DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,DATEDIFF(r.end_to,CURDATE()) as remaining,DATEDIFF(r.end_to,r.start_from)-1 as timeline,u.name as username from ais.recurring r inner join ais.mst_user u on u.user_id=r.user_id where r.type_id ="1" order by r.name';
-          break;
-        case "creditcard":
-          sql = 'select r.recurring_id as id,r.name,DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,DATEDIFF(r.end_to,CURDATE()) as remaining,DATEDIFF(r.end_to,r.start_from)-1 as timeline,u.name as username from ais.recurring r inner join ais.mst_user u on u.user_id=r.user_id where r.type_id ="2" order by r.name';
-          break;
-        }
-
-  
-      // execute the insert statmentßß
-      connection.query(sql,  (err,results, fields) => {
-        if (err) 
-        {
-          return 'Failed to execute query';
-        }
-        // Convert the query results to JSON
-        const jsonResult = JSON.stringify(results);
-        console.log(jsonResult);          
-
-        // close the database connection
-        connection.end();
-        return jsonResult;
-      });
-    
-  });
-
-};
+  try {
+    const connection = await createConnection();
+    const [results] = await connection.query(sql);
+    await connection.end();
+    return results; // Bisa langsung digunakan oleh pemanggil
+  } catch (err) {
+    console.error(err.message);
+    return null;
+  }
+}
 
 app.get('/tax', async (req, res) => {
+  try {
+    const connection = await createConnection();
 
-  const connection = await createConnection();
-  //const connection = createConnection();
+    const sql = `
+      SELECT 
+        r.recurring_id AS id,
+        r.name,
+        DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,
+        DATEDIFF(r.end_to, CURDATE()) AS remaining,
+        DATEDIFF(r.end_to, r.start_from) - 1 AS timeline,
+        u.name AS username
+      FROM ais.recurring r
+      INNER JOIN ais.mst_user u ON u.user_id = r.user_id
+      WHERE r.type_id = "3"
+      ORDER BY r.name
+    `;
 
-  connection.connect((err) => {
-      if (err) 
-      {
-          res.status(500).json({ error: 'Failed to connect to the database' });
-          return console.error(err.message);
-      }
-    
-      // insert statment
-      let sql = 'select r.recurring_id as id,r.name,DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,DATEDIFF(r.end_to,CURDATE()) as remaining,DATEDIFF(r.end_to,r.start_from)-1 as timeline,u.name as username from ais.recurring r inner join ais.mst_user u on u.user_id=r.user_id where r.type_id ="3" order by r.name';
-  
-      // execute the insert statmentßß
-      connection.query(sql,  (err, results, fields) => {
-        if (err) 
-        {
-          res.status(500).json({ error: 'Failed to execute query' });
-          return console.error(err.message);
-        }
-      
-        // Convert the query results to JSON
-        const jsonResult = JSON.stringify(results);
-        console.log(jsonResult);          
+    const [results] = await connection.query(sql);
 
-        // close the database connection
-        connection.end();
+    console.log(JSON.stringify(results));
 
-        res.json(results);
-      });
-    
-  });
+    await connection.end();
 
-
+    res.json(results);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Failed to retrieve tax data' });
+  }
 });
 
 app.get('/expense', async (req, res) => {
+  try {
+    const connection = await createConnection();
 
-  const connection = await createConnection();
-  //const connection = createConnection();
+    const sql = 'SELECT * FROM vw_DailyExpenses';
 
-connection.connect((err) => {
-    if (err)
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    // insert statment
-    let sql = 'select * from vw_DailyExpenses';
+    const [results] = await connection.query(sql);
 
-    // execute the insert statmentßß
-    connection.query(sql,  (err, results, fields) => {
-      if (err)
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-    
-      // Convert the query results to JSON
-      const jsonResult = JSON.stringify(results);
-      console.log(jsonResult);
+    console.log(JSON.stringify(results));
 
-      // close the database connection
-      connection.end();
+    await connection.end();
 
-      res.json(results);
-    });
-  
-});
-
+    res.json(results);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Failed to retrieve expense data' });
+  }
 });
 
 app.get('/priority', async (req, res) => {
+  try {
+    const connection = await createConnection();
 
-const connection = await createConnection();
-//const connection = createConnection();
+    const sql = 'SELECT priority_id AS id, priority_name FROM mst_priority';
 
-connection.connect((err) => {
-    if (err)
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    // insert statment
-    let sql = 'select priority_id as id,priority_name from mst_priority';
+    const [results] = await connection.query(sql);
 
-    // execute the insert statmentßß
-    connection.query(sql,  (err, results, fields) => {
-      if (err)
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-    
-      // Convert the query results to JSON
-      const jsonResult = JSON.stringify(results);
-      console.log(jsonResult);
+    console.log(JSON.stringify(results));
 
-      // close the database connection
-      connection.end();
+    await connection.end();
 
-      res.json(results);
-    });
-  
-});
-
+    res.json(results);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Failed to retrieve priority data' });
+  }
 });
 
 app.post('/cimbincome', async (req, res) => {
-  const newCIMBExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCIMBExpense === 'string') {
-        try {
-            part = JSON.parse(newCIMBExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCIMBExpense;
-    }
+    const connection = await createConnection();
 
-    // insert statment
-    let sql = 'CALL IncomeCIMBLedger (?,?,?)';
-    let values = [part.coa_id,part.description,part.total];
+    const sql = 'CALL IncomeCIMBLedger (?, ?, ?)';
+    const values = [part.coa_id, part.description, part.total];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCIMBExpense);
-    });
-  
-  
-  });
+    const [results] = await connection.query(sql, values);
 
+    console.log(`Stored procedure executed. Result: ${JSON.stringify(results)}`);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Failed to execute IncomeCIMBLedger' });
+  }
 });
 
 app.post('/cimbexpense', async (req, res) => {
-  const newCIMBExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCIMBExpense === 'string') {
-        try {
-            part = JSON.parse(newCIMBExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCIMBExpense;
-    }
+    const connection = await createConnection();
 
-    // insert statment
-    let sql = 'CALL InsertCIMBLedger (?,?,?,?)';
-    let values = [part.coa_id,part.description,part.total,part.priority_id];
+    const sql = 'CALL InsertCIMBLedger (?, ?, ?, ?)';
+    const values = [part.coa_id, part.description, part.total, part.priority_id];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCIMBExpense);
-    });
-  
-  
-  });
+    const [results] = await connection.query(sql, values);
 
+    console.log(`Stored procedure InsertCIMBLedger executed. Result: ${JSON.stringify(results)}`);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Failed to execute InsertCIMBLedger' });
+  }
 });
-
 app.post('/allobankexpense', async (req, res) => {
-  const newCIMBExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCIMBExpense === 'string') {
-        try {
-            part = JSON.parse(newCIMBExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCIMBExpense;
-    }
+    const connection = await createConnection();
 
-    // insert statment
-    let sql = 'CALL InsertAlloBankLedger (?,?,?,?)';
-    let values = [part.coa_id,part.description,part.total,part.priority_id];
+    const sql = 'CALL InsertAlloBankLedger (?, ?, ?, ?)';
+    const values = [part.coa_id, part.description, part.total, part.priority_id];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCIMBExpense);
-    });
-  
-  
-  });
+    const [results] = await connection.query(sql, values);
 
+    console.log(`Stored procedure InsertAlloBankLedger executed. Result: ${JSON.stringify(results)}`);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Failed to execute InsertAlloBankLedger' });
+  }
 });
-
-
 app.post('/allobankincome', async (req, res) => {
-  const newCIMBExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCIMBExpense === 'string') {
-        try {
-            part = JSON.parse(newCIMBExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCIMBExpense;
-    }
+    const connection = await createConnection();
 
-    // insert statment
-    let sql = 'CALL IncomeAlloBankLedger (?,?,?)';
-    let values = [part.coa_id,part.description,part.total];
+    const sql = 'CALL IncomeAlloBankLedger (?, ?, ?)';
+    const values = [part.coa_id, part.description, part.total];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCIMBExpense);
-    });
-  
-  
-  });
+    const [results] = await connection.query(sql, values);
 
+    console.log(`Stored procedure IncomeAlloBankLedger executed. Result: ${JSON.stringify(results)}`);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Failed to execute IncomeAlloBankLedger' });
+  }
 });
 
 app.post('/bcaincome', async (req, res) => {
-  const newCIMBExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCIMBExpense === 'string') {
-        try {
-            part = JSON.parse(newCIMBExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCIMBExpense;
-    }
+    const connection = await createConnection();
 
-    // insert statment
-    let sql = 'CALL IncomeBCALedger (?,?,?)';
-    let values = [part.coa_id,part.description,part.total];
+    const sql = 'CALL IncomeBCALedger (?, ?, ?)';
+    const values = [part.coa_id, part.description, part.total];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCIMBExpense);
-    });
-  
-  
-  });
+    const [results] = await connection.query(sql, values);
 
+    console.log(`Stored procedure IncomeBCALedger executed. Result: ${JSON.stringify(results)}`);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Failed to execute IncomeBCALedger' });
+  }
 });
 
 app.post('/bcaexpense', async (req, res) => {
-  const newCIMBExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCIMBExpense === 'string') {
-        try {
-            part = JSON.parse(newCIMBExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCIMBExpense;
-    }
+    const connection = await createConnection();
 
-    // insert statment
-    let sql = 'CALL InsertBCALedger (?,?,?,?)';
-    let values = [part.coa_id,part.description,part.total,part.priority_id];
+    const sql = 'CALL InsertBCALedger (?, ?, ?, ?)';
+    const values = [part.coa_id, part.description, part.total, part.priority_id];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCIMBExpense);
-    });
-  
-  
-  });
+    const [results] = await connection.query(sql, values);
 
+    console.log(`Stored procedure InsertBCALedger executed. Result: ${JSON.stringify(results)}`);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Failed to execute InsertBCALedger' });
+  }
 });
 
 app.post('/gopayincome', async (req, res) => {
-  const newCIMBExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCIMBExpense === 'string') {
-        try {
-            part = JSON.parse(newCIMBExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCIMBExpense;
-    }
+    const connection = await createConnection();
 
-    // insert statment
-    let sql = 'CALL IncomeGoPayLedger (?,?,?)';
-    let values = [part.coa_id,part.description,part.total];
+    const sql = 'CALL IncomeGoPayLedger (?, ?, ?)';
+    const values = [part.coa_id, part.description, part.total];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCIMBExpense);
-    });
-  
-  
-  });
+    const [results] = await connection.query(sql, values);
 
+    console.log(`Stored procedure IncomeGoPayLedger executed. Result: ${JSON.stringify(results)}`);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Failed to execute IncomeGoPayLedger' });
+  }
 });
 
 app.post('/gopayexpense', async (req, res) => {
-  const newCIMBExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCIMBExpense === 'string') {
-        try {
-            part = JSON.parse(newCIMBExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCIMBExpense;
-    }
+    const connection = await createConnection();
 
-    // insert statment
-    let sql = 'CALL InsertGoPayLedger (?,?,?,?)';
-    let values = [part.coa_id,part.description,part.total,part.priority_id];
+    const sql = 'CALL InsertGoPayLedger (?, ?, ?, ?)';
+    const values = [part.coa_id, part.description, part.total, part.priority_id];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCIMBExpense);
-    });
-  
-  
-  });
+    const [results] = await connection.query(sql, values);
 
+    console.log(`Stored procedure InsertGoPayLedger executed. Result: ${JSON.stringify(results)}`);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Failed to execute InsertGoPayLedger' });
+  }
 });
 
 app.post('/ovoincome', async (req, res) => {
-  const newCIMBExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCIMBExpense === 'string') {
-        try {
-            part = JSON.parse(newCIMBExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCIMBExpense;
-    }
+    const connection = await createConnection();
 
-    // insert statment
-    let sql = 'CALL IncomeOvoLedger (?,?,?)';
-    let values = [part.coa_id,part.description,part.total];
+    const sql = 'CALL IncomeOvoLedger (?, ?, ?)';
+    const values = [part.coa_id, part.description, part.total];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCIMBExpense);
-    });
-  
-  
-  });
+    const [results] = await connection.query(sql, values);
 
+    console.log(`Stored procedure IncomeOvoLedger executed. Result: ${JSON.stringify(results)}`);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Failed to execute IncomeOvoLedger' });
+  }
 });
 
-
 app.post('/ovoexpense', async (req, res) => {
-  const newCIMBExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCIMBExpense === 'string') {
-        try {
-            part = JSON.parse(newCIMBExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCIMBExpense;
-    }
+    const connection = await createConnection();
 
-    // insert statment
-    let sql = 'CALL InsertOvoLedger (?,?,?,?)';
-    let values = [part.coa_id,part.description,part.total,part.priority_id];
+    const sql = 'CALL InsertOvoLedger (?, ?, ?, ?)';
+    const values = [part.coa_id, part.description, part.total, part.priority_id];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCIMBExpense);
-    });
-  
-  
-  });
+    const [results] = await connection.query(sql, values);
 
+    console.log(`Stored procedure InsertOvoLedger executed. Result: ${JSON.stringify(results)}`);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Failed to execute InsertOvoLedger' });
+  }
 });
 
 app.post('/danaincome', async (req, res) => {
-  const newCIMBExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCIMBExpense === 'string') {
-        try {
-            part = JSON.parse(newCIMBExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCIMBExpense;
-    }
+    const connection = await createConnection();
 
-    // insert statment
-    let sql = 'CALL IncomeDanaLedger (?,?,?)';
-    let values = [part.coa_id,part.description,part.total];
+    const sql = 'CALL IncomeDanaLedger (?, ?, ?)';
+    const values = [part.coa_id, part.description, part.total];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCIMBExpense);
-    });
-  
-  
-  });
+    const [results] = await connection.query(sql, values);
 
+    console.log(`Stored procedure IncomeDanaLedger executed. Result: ${JSON.stringify(results)}`);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Failed to execute IncomeDanaLedger' });
+  }
 });
 
 app.post('/danaexpense', async (req, res) => {
-  const newCIMBExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCIMBExpense === 'string') {
-        try {
-            part = JSON.parse(newCIMBExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCIMBExpense;
-    }
+    const connection = await createConnection();
 
-    // insert statment
-    let sql = 'CALL InsertDanaLedger (?,?,?,?)';
-    let values = [part.coa_id,part.description,part.total,part.priority_id];
+    const sql = 'CALL InsertDanaLedger (?, ?, ?, ?)';
+    const values = [part.coa_id, part.description, part.total, part.priority_id];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCIMBExpense);
-    });
-  
-  
-  });
+    const [results] = await connection.query(sql, values);
 
+    console.log(`Stored procedure InsertDanaLedger executed. Result: ${JSON.stringify(results)}`);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Failed to execute InsertDanaLedger' });
+  }
 });
+app.post('/octoincome', async (req, res) => {
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-app.post('/octoincome',async  (req, res) => {
-  const newCIMBExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+    const connection = await createConnection();
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCIMBExpense === 'string') {
-        try {
-            part = JSON.parse(newCIMBExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCIMBExpense;
-    }
+    const sql = 'CALL IncomeOctoLedger (?, ?, ?)';
+    const values = [part.coa_id, part.description, part.total];
 
-    // insert statment
-    let sql = 'CALL IncomeOctoLedger (?,?,?)';
-    let values = [part.coa_id,part.description,part.total];
+    const [results] = await connection.query(sql, values);
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCIMBExpense);
-    });
-  
-  
-  });
+    console.log(`IncomeOctoLedger executed:`, results);
 
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error('Error executing IncomeOctoLedger:', err.message);
+    res.status(500).json({ error: 'Failed to insert income record for Octo' });
+  }
 });
-
 app.post('/octoexpense', async (req, res) => {
-  const newCIMBExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCIMBExpense === 'string') {
-        try {
-            part = JSON.parse(newCIMBExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCIMBExpense;
-    }
+    const connection = await createConnection();
 
-    // insert statment
-    let sql = 'CALL InsertOctoLedger (?,?,?,?)';
-    let values = [part.coa_id,part.description,part.total,part.priority_id];
+    const sql = 'CALL InsertOctoLedger (?, ?, ?, ?)';
+    const values = [part.coa_id, part.description, part.total, part.priority_id];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCIMBExpense);
-    });
-  
-  
-  });
+    const [results] = await connection.query(sql, values);
 
+    console.log(`InsertOctoLedger executed:`, results);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error('Error executing InsertOctoLedger:', err.message);
+    res.status(500).json({ error: 'Failed to insert expense record for Octo' });
+  }
 });
 
 app.post('/shopeepayexpense', async (req, res) => {
-  const newCIMBExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCIMBExpense === 'string') {
-        try {
-            part = JSON.parse(newCIMBExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCIMBExpense;
-    }
+    const connection = await createConnection();
 
-    // insert statment
-    let sql = 'CALL InsertShopeePayLedger (?,?,?,?)';
-    let values = [part.coa_id,part.description,part.total,part.priority_id];
+    const sql = 'CALL InsertShopeePayLedger (?, ?, ?, ?)';
+    const values = [part.coa_id, part.description, part.total, part.priority_id];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCIMBExpense);
-    });
-  
-  
-  });
+    const [results] = await connection.query(sql, values);
 
+    console.log(`InsertShopeePayLedger executed:`, results);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error('Error executing InsertShopeePayLedger:', err.message);
+    res.status(500).json({ error: 'Failed to insert ShopeePay expense record' });
+  }
 });
-
 app.post('/flazzexpense', async (req, res) => {
-  const newFlazzExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newFlazzExpense === 'string') {
-        try {
-            part = JSON.parse(newFlazzExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newFlazzExpense;
-    }
+    const connection = await createConnection();
 
-    // insert statment
-    let sql = 'CALL InsertFlazzLedger (?,?,?,?)';
-    let values = [part.coa_id,part.description,part.total,part.priority_id];
+    const sql = 'CALL InsertFlazzLedger (?, ?, ?, ?)';
+    const values = [part.coa_id, part.description, part.total, part.priority_id];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newFlazzExpense);
-    });
-  
-  
-  });
+    const [results] = await connection.query(sql, values);
 
+    console.log(`InsertFlazzLedger executed:`, results);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error('Error executing InsertFlazzLedger:', err.message);
+    res.status(500).json({ error: 'Failed to insert Flazz expense' });
+  }
 });
-
-
 app.post('/hanaexpense', async (req, res) => {
-  const newCashExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCashExpense === 'string') {
-        try {
-            part = JSON.parse(newCashExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCashExpense;
-    }
+    const connection = await createConnection();
 
-    // insert statment
-    let sql = 'CALL InsertHanaLedger (?,?,?,?)';
-    let values = [part.coa_id,part.description,part.total,part.priority_id];
+    const sql = 'CALL InsertHanaLedger (?, ?, ?, ?)';
+    const values = [part.coa_id, part.description, part.total, part.priority_id];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCashExpense);
-    });
-  
-  
-  });
+    const [results] = await connection.query(sql, values);
 
+    console.log(`InsertHanaLedger executed:`, results);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error('Error executing InsertHanaLedger:', err.message);
+    res.status(500).json({ error: 'Failed to insert Hana expense' });
+  }
 });
-
 app.post('/hanaincome', async (req, res) => {
-  const newCashExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCashExpense === 'string') {
-        try {
-            part = JSON.parse(newCashExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCashExpense;
-    }
+    const connection = await createConnection();
 
-    // insert statment
-    let sql = 'CALL IncomeHanaLedger (?,?,?)';
-    let values = [part.coa_id,part.description,part.total];
+    const sql = 'CALL IncomeHanaLedger (?, ?, ?)';
+    const values = [part.coa_id, part.description, part.total];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCashExpense);
-    });
-  
-  
-  });
+    const [results] = await connection.query(sql, values);
 
+    console.log('IncomeHanaLedger executed:', results);
+
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error('Error executing IncomeHanaLedger:', err.message);
+    res.status(500).json({ error: 'Failed to insert Hana income' });
+  }
 });
 
+async function handleLedgerCall(req, res, procedureName, hasPriority) {
+  try {
+    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    const connection = await createConnection();
 
-app.post('/permataexpense', async (req, res) => {
-  const newCashExpense = req.body;
+    const values = hasPriority
+      ? [part.coa_id, part.description, part.total, part.priority_id]
+      : [part.coa_id, part.description, part.total];
+
+    const sql = `CALL ${procedureName} (${values.map(() => '?').join(', ')})`;
+
+    const [results] = await connection.query(sql, values);
+
+    console.log(`${procedureName} executed`, results);
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error(`Error executing ${procedureName}:`, err.message);
+    res.status(500).json({ error: `Failed to execute ${procedureName}` });
+  }
+}
+
+app.post('/permataincome', (req, res) =>
+  handleLedgerCall(req, res, 'IncomePermataLedger', false)
+);
+
+app.post('/permataexpense', (req, res) =>
+  handleLedgerCall(req, res, 'InsertHPermataLedger', true)
+);
+
+app.post('/cashincome', (req, res) =>
+  handleLedgerCall(req, res, 'IncomeCashLedger', false)
+);
+
+app.post('/cashexpense', (req, res) =>
+  handleLedgerCall(req, res, 'InsertCashLedger', true)
+);
+
+// app.post('/permataexpense', async (req, res) => {
+//   const newCashExpense = req.body;
   
-  const connection = await createConnection();
-  //const connection = createConnection();
+//   const connection = await createConnection();
+//   //const connection = createConnection();
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
+//   connection.connect((err) => {
+//     if (err) 
+//     {
+//         res.status(500).json({ error: 'Failed to connect to the database' });
+//         return console.error(err.message);
+//     }
   
-    if (typeof newCashExpense === 'string') {
-        try {
-            part = JSON.parse(newCashExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCashExpense;
-    }
+//     if (typeof newCashExpense === 'string') {
+//         try {
+//             part = JSON.parse(newCashExpense);
+//         } catch (error) {
+//             console.error('Invalid JSON string:', error);
+//             return;
+//         }
+//     } else {
+//         part = newCashExpense;
+//     }
 
-    // insert statment
-    let sql = 'CALL InsertPermataLedger (?,?,?,?)';
-    let values = [part.coa_id,part.description,part.total,part.priority_id];
+//     // insert statment
+//     let sql = 'CALL InsertPermataLedger (?,?,?,?)';
+//     let values = [part.coa_id,part.description,part.total,part.priority_id];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
+//     // execute the insert statment
+//     connection.query(sql, values, (err, results, fields) => {
+//       if (err) 
+//       {
+//         res.status(500).json({ error: 'Failed to execute query' });
+//         return console.error(err.message);
+//       }
   
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCashExpense);
-    });
-  
-  
-  });
-
-});
-
-app.post('/permataincome', async (req, res) => {
-  const newCashExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
-
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCashExpense === 'string') {
-        try {
-            part = JSON.parse(newCashExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCashExpense;
-    }
-
-    // insert statment
-    let sql = 'CALL IncomePermataLedger (?,?,?)';
-    let values = [part.coa_id,part.description,part.total];
-
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCashExpense);
-    });
+//       console.log(`Inserted Rows: ${results.affectedRows}`);
+//       // close the database connection
+//       connection.end();
+//       res.status(201).json(newCashExpense);
+//     });
   
   
-  });
+//   });
 
-});
+// });
 
-app.post('/cashincome', async (req, res) => {
-  const newCashExpense = req.body;
-  const connection = await createConnection();
-  //const connection = createConnection();
+// app.post('/permataincome', async (req, res) => {
+//   const newCashExpense = req.body;
+//   const connection = await createConnection();
+//   //const connection = createConnection();
 
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
+//   connection.connect((err) => {
+//     if (err) 
+//     {
+//         res.status(500).json({ error: 'Failed to connect to the database' });
+//         return console.error(err.message);
+//     }
   
-    if (typeof newCashExpense === 'string') {
-        try {
-            part = JSON.parse(newCashExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCashExpense;
-    }
+//     if (typeof newCashExpense === 'string') {
+//         try {
+//             part = JSON.parse(newCashExpense);
+//         } catch (error) {
+//             console.error('Invalid JSON string:', error);
+//             return;
+//         }
+//     } else {
+//         part = newCashExpense;
+//     }
 
-    // insert statment
-    let sql = 'CALL IncomeCashLedger (?,?,?)';
-    let values = [part.coa_id,part.description,part.total];
+//     // insert statment
+//     let sql = 'CALL IncomePermataLedger (?,?,?)';
+//     let values = [part.coa_id,part.description,part.total];
 
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
+//     // execute the insert statment
+//     connection.query(sql, values, (err, results, fields) => {
+//       if (err) 
+//       {
+//         res.status(500).json({ error: 'Failed to execute query' });
+//         return console.error(err.message);
+//       }
   
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCashExpense);
-    });
-  
-  
-  });
-
-});
-
-app.post('/cashexpense', async (req, res) => {
-  const newCashExpense = req.body;
-  const connection = await createConnection();
-
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newCashExpense === 'string') {
-        try {
-            part = JSON.parse(newCashExpense);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        part = newCashExpense;
-    }
-
-    // insert statment
-    let sql = 'CALL InsertCashLedger (?,?,?,?)';
-    let values = [part.coa_id,part.description,part.total,part.priority_id];
-
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newCashExpense);
-    });
+//       console.log(`Inserted Rows: ${results.affectedRows}`);
+//       // close the database connection
+//       connection.end();
+//       res.status(201).json(newCashExpense);
+//     });
   
   
-  });
+//   });
 
-});
+// });
+
+// app.post('/cashincome', async (req, res) => {
+//   const newCashExpense = req.body;
+//   const connection = await createConnection();
+//   //const connection = createConnection();
+
+//   connection.connect((err) => {
+//     if (err) 
+//     {
+//         res.status(500).json({ error: 'Failed to connect to the database' });
+//         return console.error(err.message);
+//     }
+  
+//     if (typeof newCashExpense === 'string') {
+//         try {
+//             part = JSON.parse(newCashExpense);
+//         } catch (error) {
+//             console.error('Invalid JSON string:', error);
+//             return;
+//         }
+//     } else {
+//         part = newCashExpense;
+//     }
+
+//     // insert statment
+//     let sql = 'CALL IncomeCashLedger (?,?,?)';
+//     let values = [part.coa_id,part.description,part.total];
+
+//     // execute the insert statment
+//     connection.query(sql, values, (err, results, fields) => {
+//       if (err) 
+//       {
+//         res.status(500).json({ error: 'Failed to execute query' });
+//         return console.error(err.message);
+//       }
+  
+//       console.log(`Inserted Rows: ${results.affectedRows}`);
+//       // close the database connection
+//       connection.end();
+//       res.status(201).json(newCashExpense);
+//     });
+  
+  
+//   });
+
+// });
+
+// app.post('/cashexpense', async (req, res) => {
+//   const newCashExpense = req.body;
+//   const connection = await createConnection();
+
+//   connection.connect((err) => {
+//     if (err) 
+//     {
+//         res.status(500).json({ error: 'Failed to connect to the database' });
+//         return console.error(err.message);
+//     }
+  
+//     if (typeof newCashExpense === 'string') {
+//         try {
+//             part = JSON.parse(newCashExpense);
+//         } catch (error) {
+//             console.error('Invalid JSON string:', error);
+//             return;
+//         }
+//     } else {
+//         part = newCashExpense;
+//     }
+
+//     // insert statment
+//     let sql = 'CALL InsertCashLedger (?,?,?,?)';
+//     let values = [part.coa_id,part.description,part.total,part.priority_id];
+
+//     // execute the insert statment
+//     connection.query(sql, values, (err, results, fields) => {
+//       if (err) 
+//       {
+//         res.status(500).json({ error: 'Failed to execute query' });
+//         return console.error(err.message);
+//       }
+  
+//       console.log(`Inserted Rows: ${results.affectedRows}`);
+//       // close the database connection
+//       connection.end();
+//       res.status(201).json(newCashExpense);
+//     });
+  
+  
+//   });
+
+// });
 
 function transformToPivot(rows) {
   const pivotMap = {};
@@ -1556,604 +1022,403 @@ app.get('/pivot', async (req, res) => {
 });
 
 app.get('/coaincome', async (req, res) => {
+  let connection;
   try {
-    const connection = await createConnection();
+    connection = await createConnection();
 
     const [results] = await connection.query('SELECT * FROM vw_CoaIncomes');
 
-    console.log(JSON.stringify(results));
-
-    await connection.end();
+    console.log('vw_CoaIncomes results:', results);
 
     res.json(results);
   } catch (err) {
-    console.error(err.message);
+    console.error('Error fetching vw_CoaIncomes:', err.message);
     res.status(500).json({ error: 'Failed to fetch data from vw_CoaIncomes' });
+  } finally {
+    if (connection) await connection.end();
   }
 });
 
 app.get('/coaexpense', async (req, res) => {
+  let connection;
+  try {
+    connection = await createConnection();
 
-const connection = await createConnection();
+    const [results] = await connection.query('SELECT * FROM vw_CoaExpenses');
 
-connection.connect((err) => {
-    if (err)
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    // insert statment
-    let sql = 'select * from vw_CoaExpenses';
+    console.log('vw_CoaExpenses results:', results);
 
-    // execute the insert statmentßß
-    connection.query(sql,  (err, results, fields) => {
-      if (err)
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-    
-      // Convert the query results to JSON
-      const jsonResult = JSON.stringify(results);
-      console.log(jsonResult);
-
-      // close the database connection
-      connection.end();
-
-      res.json(results);
-    });
-  
+    res.json(results);
+  } catch (err) {
+    console.error('Error fetching vw_CoaExpenses:', err.message);
+    res.status(500).json({ error: 'Failed to fetch data from vw_CoaExpenses' });
+  } finally {
+    if (connection) await connection.end();
+  }
 });
-
-});
-
-
 app.get('/creditcard', async (req, res) => {
+  let connection;
 
-  //let err=recurringtransaction("creditcard");
-   //if (err=='Failed to connect to the database')
-  // {
-   //     res.status(500).json({ error: 'Failed to connect to the database' });
-  // }
-   //else if (err=='Failed to execute query')
-   //{
-   //     res.status(500).json({ error: 'Failed to execute query' });
-  // }
-  // else
-  // {
-     //   res.json(err);
-//   }
+  try {
+    connection = await createConnection();
 
-const connection =await createConnection();
+    const sql = `
+      SELECT 
+        r.recurring_id AS id,
+        r.name,
+        DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,
+        DATEDIFF(r.end_to, CURDATE()) AS remaining,
+        DATEDIFF(r.end_to, r.start_from) - 1 AS timeline,
+        u.name AS username
+      FROM ais.recurring r
+      INNER JOIN ais.mst_user u ON u.user_id = r.user_id
+      WHERE r.type_id = "2"
+      ORDER BY r.name
+    `;
 
-connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    // insert statment
-    let sql = 'select r.recurring_id as id,r.name,DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,DATEDIFF(r.end_to,CURDATE()) as remaining,DATEDIFF(r.end_to,r.start_from)-1 as timeline,u.name as username from ais.recurring r inner join ais.mst_user u on u.user_id=r.user_id where r.type_id ="2" order by r.name';
+    const [results] = await connection.query(sql);
 
-    // execute the insert statmentßß
-    connection.query(sql,  (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-    
-      // Convert the query results to JSON
-      const jsonResult = JSON.stringify(results);
-      console.log(jsonResult);          
+    console.log('Credit card recurring results:', results);
 
-      // close the database connection
-      connection.end();
-
-      res.json(results);
-    });
-  
+    res.json(results);
+  } catch (err) {
+    console.error('Error executing /creditcard:', err.message);
+    res.status(500).json({ error: 'Failed to fetch credit card recurring data' });
+  } finally {
+    if (connection) await connection.end();
+  }
 });
-
-});
-
 app.get('/insurance', async (req, res) => {
+  let connection;
 
-  const connection = await createConnection();
+  try {
+    connection = await createConnection();
 
-  connection.connect((err) => {
-      if (err) 
-      {
-          res.status(500).json({ error: 'Failed to connect to the database' });
-          return console.error(err.message);
-      }
-    
-      // insert statment
-      let sql = 'select r.recurring_id as id,r.name,DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,DATEDIFF(r.end_to,CURDATE()) as remaining,DATEDIFF(r.end_to,r.start_from)-1 as timeline,u.name as username from ais.recurring r inner join ais.mst_user u on u.user_id=r.user_id where r.type_id ="1"';
-  
-      // execute the insert statmentßß
-      connection.query(sql,  (err, results, fields) => {
-        if (err) 
-        {
-          res.status(500).json({ error: 'Failed to execute query' });
-          return console.error(err.message);
-        }
-      
-        // Convert the query results to JSON
-        const jsonResult = JSON.stringify(results);
-        console.log(jsonResult);          
+    const sql = `
+      SELECT 
+        r.recurring_id AS id,
+        r.name,
+        DATE_FORMAT(r.end_to, "%Y-%m-%d") AS end_to,
+        DATEDIFF(r.end_to, CURDATE()) AS remaining,
+        DATEDIFF(r.end_to, r.start_from) - 1 AS timeline,
+        u.name AS username
+      FROM ais.recurring r
+      INNER JOIN ais.mst_user u ON u.user_id = r.user_id
+      WHERE r.type_id = "1"
+    `;
 
-        // close the database connection
-        connection.end();
+    const [results] = await connection.query(sql);
 
-        res.json(results);
-      });
-    
-  });
+    console.log('Insurance recurring results:', results);
 
+    res.json(results);
+  } catch (err) {
+    console.error('Error executing /insurance:', err.message);
+    res.status(500).json({ error: 'Failed to fetch insurance recurring data' });
+  } finally {
+    if (connection) await connection.end();
+  }
 });
-
 app.post('/water', async (req, res) => {
-  const newWater = req.body;
-  const connection = await createConnection();
+  let connection;
 
-  await connection.connect(async (err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newWater === 'string') {
-        try {
-          water = JSON.parse(newWater);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-      water = newWater;
-    }
+  try {
+    const newWater = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-    // insert statment
-    let sql = 'INSERT INTO ais.water (date,water_value) VALUES (?,?)';
-    let values = [water.date,water.water_value];
+    connection = await createConnection();
 
-    // execute the insert statment
-    await connection.query(sql, values, async (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      await connection.end();
-      res.status(201).json(newWater);
-    });
-  
-  
-  });
+    const sql = 'INSERT INTO ais.water (date, water_value) VALUES (?, ?)';
+    const values = [newWater.date, newWater.water_value];
 
-});
+    const [results] = await connection.query(sql, values);
 
-
-app.get('/water', async (req, res) => {
-
-  const connection = await createConnection();
-
-  connection.connect(async (err) => {
-      if (err) 
-      {
-          res.status(500).json({ error: 'Failed to connect to the database' });
-          return console.error(err.message);
-      }
-    
-      // insert statment
-      let sql = 'select * from vw_water';
-  
-      // execute the insert statment
-      await connection.query(sql,  async (err, results, fields) => {
-        if (err) 
-        {
-          res.status(500).json({ error: 'Failed to execute query' });
-          return console.error(err.message);
-        }
-      
-        // Convert the query results to JSON
-        const jsonResult = JSON.stringify(results);
-        console.log(jsonResult);
-
-        // close the database connection
-        await connection.end();
-
-        res.json(results);
-      });
-    
-  });
-
-});
-
-
-app.post('/electricity', async (req, res) => {
-  const newElectricity = req.body;
-  const connection = await createConnection();
-
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newElectricity === 'string') {
-        try {
-          electricity = JSON.parse(newElectricity);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-      electricity = newElectricity;
-    }
-
-    // insert statment
-    let sql = 'INSERT INTO ais.electricity (date,electricity_value) VALUES (?,?)';
-    let values = [electricity.date,electricity.electricity_value];
-
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newElectricity);
-    });
-  
-  
-  });
-
-});
-
-// Read (GET) all items
-app.get('/electricity', async (req, res) => {
-
-  const connection = await createConnection();
-
-  connection.connect((err) => {
-      if (err) 
-      {
-          res.status(500).json({ error: 'Failed to connect to the database' });
-          return console.error(err.message);
-      }
-    
-      // insert statment
-      let sql = 'select * from vw_electricity';
-  
-      // execute the insert statment
-      connection.query(sql,  (err, results, fields) => {
-        if (err) 
-        {
-          res.status(500).json({ error: 'Failed to execute query' });
-          return console.error(err.message);
-        }
-      
-        // Convert the query results to JSON
-        const jsonResult = JSON.stringify(results);
-        console.log(jsonResult);          
-
-        // close the database connection
-        connection.end();
-
-        res.json(results);
-      });
-    
-  });
-
-});
-
-
-
-// Create (POST) a new item
-app.post('/items', async (req, res) => {
-  const newItem = req.body;
-  const connection = await createConnection();
-
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    if (typeof newItem === 'string') {
-        try {
-            item = JSON.parse(newItem);
-        } catch (error) {
-            console.error('Invalid JSON string:', error);
-            return;
-        }
-    } else {
-        item = newItem;
-    }
-
-    // insert statment
-    let sql = 'INSERT INTO items (name) VALUES (?)';
-    let values = [item.name];
-
-    // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
-      if (err) 
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-  
-      console.log(`Inserted Rows: ${results.affectedRows}`);
-      // close the database connection
-      connection.end();
-      res.status(201).json(newItem);
-    });
-  
-  
-  });
-
-});
-
-// Read (GET) all items
-app.get('/items', async (req, res) => {
-
-    const connection = await createConnection();
-
-    connection.connect((err) => {
-        if (err) 
-        {
-            res.status(500).json({ error: 'Failed to connect to the database' });
-            return console.error(err.message);
-        }
-      
-        // insert statment
-        let sql = 'select * from  items';
-    
-        // execute the insert statment
-        connection.query(sql,  (err, results, fields) => {
-          if (err) 
-          {
-            res.status(500).json({ error: 'Failed to execute query' });
-            return console.error(err.message);
-          }
-        
-          // Convert the query results to JSON
-          const jsonResult = JSON.stringify(results);
-          console.log(jsonResult);          
-
-          // close the database connection
-          connection.end();
-
-          res.json(results);
-        });
-      
-    });
-
-});
-
-app.get('/estelectricbill', async (req, res) => {
-
-    const connection = await createConnection();
-
-    connection.connect((err) => {
-        if (err) 
-        {
-            res.status(500).json({ error: 'Failed to connect to the database' });
-            return console.error(err.message);
-        }
-      
-        // insert statment
-        let sql = 'select electricbillest from  vw_estelectricbill';
-
-        connection.query(sql, (err, results, fields) => {
-          if (err) 
-          {
-            res.status(404).json({ error: 'electricbillest not found' });
-            return console.error(err.message);
-          }
-        
-          // Convert the query results to JSON
-          const jsonResult = JSON.stringify(results);
-          console.log(jsonResult);          
-
-          // close the database connection
-          connection.end();
-
-          res.json(results);
-        });
-      
-    });
-
-});
-
-app.get('/estwaterbill', async (req, res) => {
-
-    const connection = await createConnection();
-
-    connection.connect((err) => {
-        if (err) 
-        {
-            res.status(500).json({ error: 'Failed to connect to the database' });
-            return console.error(err.message);
-        }
-      
-        // insert statment
-        let sql = 'select waterbillest from  vw_estwaterbill';
-
-        connection.query(sql, (err, results, fields) => {
-          if (err) 
-          {
-            res.status(404).json({ error: 'waterbillest not found' });
-            return console.error(err.message);
-          }
-        
-          // Convert the query results to JSON
-          const jsonResult = JSON.stringify(results);
-          console.log(jsonResult);          
-
-          // close the database connection
-          connection.end();
-
-          res.json(results);
-        });
-      
-    });
-
-});
-
-app.get('/balance/:id', async (req, res) => {
-
-    const connection = await createConnection(dbConfig);
-    const id = req.params.id;
-
-    connection.connect((err) => {
-        if (err) 
-        {
-            res.status(500).json({ error: 'Failed to connect to the database' });
-            return console.error(err.message);
-        }
-      
-        // insert statment
-        let sql = 'select Balance from  mst_coa where coa_id=?';
-
-        // execute the insert statment
-        let icoadid;
-
-        switch (id)
-        {
-            case "Allo Bank":
-              icoadid= 32;
-              break;
-            case "BCA":
-              icoadid=2;
-              break;
-            case "Cash":
-              icoadid=1;
-              break;
-            case "CIMB":
-              icoadid=3;
-              break;
-            case "Dana":
-              icoadid=25;
-              break;
-            case "Flazz":
-              icoadid=10;
-              break;
-            case "GoPay":
-              icoadid=5;
-              break;
-            case "Hana":
-              icoadid=57;
-              break;
-            case "Octo":
-              icoadid=24;
-              break;
-            case "Ovo":
-              icoadid=38;
-              break;
-            case "Permata":
-              icoadid= 48;
-              break;
-            case "ShopeePay":
-              icoadid=7;
-              break;
-        }
-        console.log(id);
-        console.log(icoadid);
-        connection.query(sql, [icoadid], (err, results, fields) => {
-          if (err) 
-          {
-            res.status(404).json({ error: 'Balance not found' });
-            return console.error(err.message);
-          }
-        
-          // Convert the query results to JSON
-          const jsonResult = JSON.stringify(results);
-          console.log(jsonResult);          
-
-          // close the database connection
-          connection.end();
-
-          res.json(results);
-        });
-      
-    });
-
-});
-
-// Read (GET) a specific item by ID
-app.get('/items/:id', async (req, res) => {
-
-    const connection = await createConnection();
-    const id = parseInt(req.params.id);
-
-    connection.connect((err) => {
-        if (err) 
-        {
-            res.status(500).json({ error: 'Failed to connect to the database' });
-            return console.error(err.message);
-        }
-      
-        // insert statment
-        let sql = 'select * from  items where id=?';
-
-        // execute the insert statment
-        connection.query(sql, id, (err, results, fields) => {
-          if (err) 
-          {
-            res.status(404).json({ error: 'Item not found' });
-            return console.error(err.message);
-          }
-        
-          // Convert the query results to JSON
-          const jsonResult = JSON.stringify(results);
-          console.log(jsonResult);          
-
-          // close the database connection
-          connection.end();
-
-          res.json(results);
-        });
-      
-    });
-
-});
-
-// Update (PUT) an item by ID
-app.put('/items/:id', async (req, res) => {
-  const id = parseInt(req.params.id);
-  const updatedItem = req.body;
-  const index = data.findIndex((item) => item.id === id);
-  if (index === -1) {
-    res.status(404).json({ error: 'Item not found' });
-  } else {
-    data[index] = { ...data[index], ...updatedItem };
-    res.json(data[index]);
+    console.log(`Inserted Rows: ${results.affectedRows}`);
+    res.status(201).json(newWater);
+  } catch (err) {
+    console.error('Error executing /water:', err.message);
+    res.status(500).json({ error: 'Failed to insert water data' });
+  } finally {
+    if (connection) await connection.end();
   }
 });
 
-// Delete (DELETE) an item by ID
-app.delete('/items/:id', async (req, res) => {
-      const id = parseInt(req.params.id);
-      const index = data.findIndex((item) => item.id === id);
-      if (index === -1) {
-        res.status(404).json({ error: 'Item not found' });
-      } else {
-        const deletedItem = data.splice(index, 1);
-        res.json(deletedItem[0]);
-      }
+app.get('/water', async (req, res) => {
+  let connection;
+
+  try {
+    connection = await createConnection();
+
+    const [results] = await connection.query('SELECT * FROM vw_water');
+
+    console.log(JSON.stringify(results));
+
+    res.json(results);
+  } catch (err) {
+    console.error('Error executing /water:', err.message);
+    res.status(500).json({ error: 'Failed to fetch water data' });
+  } finally {
+    if (connection) await connection.end();
+  }
 });
+
+app.post('/electricity', async (req, res) => {
+  let connection;
+
+  try {
+    const electricity = typeof req.body === 'string'
+      ? JSON.parse(req.body)
+      : req.body;
+
+    connection = await createConnection();
+
+    const sql = 'INSERT INTO ais.electricity (date, electricity_value) VALUES (?, ?)';
+    const values = [electricity.date, electricity.electricity_value];
+
+    const [results] = await connection.query(sql, values);
+
+    console.log(`Inserted Rows: ${results.affectedRows}`);
+    res.status(201).json(electricity);
+  } catch (err) {
+    console.error('Error inserting electricity data:', err.message);
+    res.status(500).json({ error: 'Failed to insert electricity data' });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+app.get('/electricity', async (req, res) => {
+  let connection;
+
+  try {
+    connection = await createConnection();
+
+    const [results] = await connection.query('SELECT * FROM vw_electricity');
+
+    console.log(JSON.stringify(results));
+    res.json(results);
+  } catch (err) {
+    console.error('Failed to fetch electricity data:', err.message);
+    res.status(500).json({ error: 'Failed to fetch electricity data' });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+app.post('/items', async (req, res) => {
+  let connection;
+  let item;
+
+  try {
+    connection = await createConnection();
+
+    const newItem = req.body;
+
+    // Cek dan parse jika perlu
+    item = (typeof newItem === 'string') ? JSON.parse(newItem) : newItem;
+
+    const sql = 'INSERT INTO items (name) VALUES (?)';
+    const values = [item.name];
+
+    const [results] = await connection.query(sql, values);
+
+    console.log(`Inserted Rows: ${results.affectedRows}`);
+    res.status(201).json(item);
+  } catch (err) {
+    console.error('Failed to insert item:', err.message);
+    res.status(500).json({ error: 'Failed to insert item' });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+app.get('/items', async (req, res) => {
+  let connection;
+
+  try {
+    connection = await createConnection();
+
+    const [results] = await connection.query('SELECT * FROM items');
+
+    console.log(JSON.stringify(results));
+    res.json(results);
+  } catch (err) {
+    console.error('Failed to fetch items:', err.message);
+    res.status(500).json({ error: 'Failed to fetch items' });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+app.get('/estelectricbill', async (req, res) => {
+  let connection;
+
+  try {
+    connection = await createConnection();
+
+    const [results] = await connection.query('SELECT electricbillest FROM vw_estelectricbill');
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'electricbillest not found' });
+    }
+
+    console.log(JSON.stringify(results));
+    res.json(results);
+  } catch (err) {
+    console.error('Error fetching electricbillest:', err.message);
+    res.status(500).json({ error: 'Failed to fetch electricbillest' });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+app.get('/estwaterbill', async (req, res) => {
+  let connection;
+
+  try {
+    connection = await createConnection();
+
+    const [results] = await connection.query('SELECT waterbillest FROM vw_estwaterbill');
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'waterbillest not found' });
+    }
+
+    console.log(JSON.stringify(results));
+    res.json(results);
+  } catch (err) {
+    console.error('Error fetching waterbillest:', err.message);
+    res.status(500).json({ error: 'Failed to fetch waterbillest' });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+app.get('/balance/:id', async (req, res) => {
+  const connection = await createConnection(dbConfig);
+  const id = req.params.id;
+
+  // Peta nama ke coa_id
+  const coaMap = {
+    "Allo Bank": 32,
+    "BCA": 2,
+    "Cash": 1,
+    "CIMB": 3,
+    "Dana": 25,
+    "Flazz": 10,
+    "GoPay": 5,
+    "Hana": 57,
+    "Octo": 24,
+    "Ovo": 38,
+    "Permata": 48,
+    "ShopeePay": 7,
+  };
+
+  const coaId = coaMap[id];
+
+  if (!coaId) {
+    await connection.end();
+    return res.status(400).json({ error: `Invalid COA name: ${id}` });
+  }
+
+  try {
+    const [results] = await connection.query(
+      'SELECT Balance FROM mst_coa WHERE coa_id = ?',
+      [coaId]
+    );
+
+    console.log({ id, coaId, results });
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Balance not found' });
+    }
+
+    res.json(results);
+  } catch (err) {
+    console.error('Query error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch balance' });
+  } finally {
+    await connection.end();
+  }
+});
+app.get('/items/:id', async (req, res) => {
+  let connection;
+
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid ID format' });
+    }
+
+    connection = await createConnection();
+    const [results] = await connection.query('SELECT * FROM items WHERE id = ?', [id]);
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    console.log(JSON.stringify(results));
+    res.json(results[0]); // return single item
+  } catch (err) {
+    console.error('Error fetching item:', err.message);
+    res.status(500).json({ error: 'Failed to fetch item' });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+app.put('/items/:id', async (req, res) => {
+  let connection;
+
+  try {
+    const id = parseInt(req.params.id);
+    const updatedItem = req.body;
+
+    if (isNaN(id) || !updatedItem.name) {
+      return res.status(400).json({ error: 'Invalid ID or missing name' });
+    }
+
+    connection = await createConnection();
+
+    // Check if the item exists
+    const [existing] = await connection.query('SELECT * FROM items WHERE id = ?', [id]);
+    if (existing.length === 0) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    // Update the item
+    await connection.query('UPDATE items SET name = ? WHERE id = ?', [updatedItem.name, id]);
+
+    console.log(`Updated item ID ${id} with name = ${updatedItem.name}`);
+    res.json({ id, name: updatedItem.name });
+
+  } catch (err) {
+    console.error('Update error:', err.message);
+    res.status(500).json({ error: 'Failed to update item' });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+app.delete('/items/:id', async (req, res) => {
+  let connection;
+
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid ID format' });
+    }
+
+    connection = await createConnection();
+
+    // Cek apakah item ada
+    const [existing] = await connection.query('SELECT * FROM items WHERE id = ?', [id]);
+    if (existing.length === 0) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    // Lakukan penghapusan
+    await connection.query('DELETE FROM items WHERE id = ?', [id]);
+
+    console.log(`Deleted item ID ${id}`);
+    res.json({ message: 'Item deleted successfully', deletedItem: existing[0] });
+
+  } catch (err) {
+    console.error('Delete error:', err.message);
+    res.status(500).json({ error: 'Failed to delete item' });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+
