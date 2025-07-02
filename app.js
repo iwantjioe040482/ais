@@ -550,6 +550,52 @@ app.post('/cimbexpense', (req, res) => {
 
 });
 
+app.post('/allobankexpense', (req, res) => {
+  const newCIMBExpense = req.body;
+  const connection = createConnection();
+
+  connection.connect((err) => {
+    if (err) 
+    {
+        res.status(500).json({ error: 'Failed to connect to the database' });
+        return console.error(err.message);
+    }
+  
+    if (typeof newCIMBExpense === 'string') {
+        try {
+            part = JSON.parse(newCIMBExpense);
+        } catch (error) {
+            console.error('Invalid JSON string:', error);
+            return;
+        }
+    } else {
+        part = newCIMBExpense;
+    }
+
+    // insert statment
+    let sql = 'CALL InsertAlloBankLedger (?,?,?,?)';
+    let values = [part.coa_id,part.description,part.total,part.priority_id];
+
+    // execute the insert statment
+    connection.query(sql, values, (err, results, fields) => {
+      if (err) 
+      {
+        res.status(500).json({ error: 'Failed to execute query' });
+        return console.error(err.message);
+      }
+  
+      console.log(`Inserted Rows: ${results.affectedRows}`);
+      // close the database connection
+      connection.end();
+      res.status(201).json(newCIMBExpense);
+    });
+  
+  
+  });
+
+});
+
+
 app.post('/allobankincome', (req, res) => {
   const newCIMBExpense = req.body;
   const connection = createConnection();
