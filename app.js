@@ -1455,7 +1455,7 @@ app.post('/cashexpense', (req, res) => {
 });
 
 async function fetchPivotData() {
-  
+
 const connection = createConnection();
 
   connection.connect((err) => {
@@ -1478,7 +1478,7 @@ const connection = createConnection();
   `);
 
   return rows;
-}
+};
 
 function transformToPivot(rows) {
   const pivotMap = {};
@@ -1510,7 +1510,7 @@ function transformToPivot(rows) {
   });
 
   return Object.values(pivotMap);
-}
+};
 
 app.get('/pivot', async (req, res) => {
   const rawData = await fetchPivotData();
