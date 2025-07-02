@@ -1772,35 +1772,41 @@ app.get('/balance/:id', (req, res) => {
 
         switch (id)
         {
-            case "Cash":
-              icoadid=1;
-              break;
-            case "Flazz":
-              icoadid=10;
-              break;
-            case "CIMB":
-              icoadid=3;
+            case "Allo Bank":
+              icoadid= 32;
               break;
             case "BCA":
               icoadid=2;
               break;
-            case "Octo":
-              icoadid=24;
+            case "Cash":
+              icoadid=1;
               break;
-            case "ShopeePay":
-              icoadid=7;
-              break;
-            case "GoPay":
-              icoadid=5;
-              break;
-            case "Ovo":
-              icoadid=38;
+            case "CIMB":
+              icoadid=3;
               break;
             case "Dana":
               icoadid=25;
               break;
-            case "Allo Bank":
-              icoadid= 32;
+            case "Flazz":
+              icoadid=10;
+              break;
+            case "GoPay":
+              icoadid=5;
+              break;
+            case "Hana":
+              icoadid=57;
+              break;
+            case "Octo":
+              icoadid=24;
+              break;
+            case "Ovo":
+              icoadid=38;
+              break;
+            case "Permata":
+              icoadid= 48;
+              break;
+            case "ShopeePay":
+              icoadid=7;
               break;
         }
         console.log(id);
