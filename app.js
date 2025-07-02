@@ -1454,6 +1454,61 @@ app.post('/cashexpense', (req, res) => {
 
 });
 
+async function fetchPivotData() {
+
+  const [rows] = await connection.execute(`
+    SELECT 
+      DATE_FORMAT(tl.gl_date, '%Y-%m') AS gl_month,
+      mc.coa_name,
+      SUM(tl.total) AS total
+    FROM tr_ledger tl
+    JOIN mst_coa mc ON mc.coa_id = tl.coa_id
+    WHERE mc.coa_code LIKE '500%'
+    GROUP BY gl_month, mc.coa_name
+    ORDER BY gl_month, mc.coa_name
+  `);
+
+  return rows;
+}
+
+function transformToPivot(rows) {
+  const pivotMap = {};
+
+  rows.forEach(row => {
+    const month = row.gl_month;
+    const coa = row.coa_name;
+    const total = row.total;
+
+    if (!pivotMap[coa]) {
+      pivotMap[coa] = { coa_name: coa, apr: 0, may: 0, jun: 0, jul: 0 };
+    }
+
+    // Mapping manual: sesuaikan gl_month ke field apr/may/jun/jul
+    switch (month) {
+      case '2025-04':
+        pivotMap[coa].apr = total;
+        break;
+      case '2025-05':
+        pivotMap[coa].may = total;
+        break;
+      case '2025-06':
+        pivotMap[coa].jun = total;
+        break;
+      case '2025-07':
+        pivotMap[coa].jul = total;
+        break;
+    }
+  });
+
+  return Object.values(pivotMap);
+}
+
+app.get('/pivot', async (req, res) => {
+  const rawData = await fetchPivotData();
+  const pivot = transformToPivot(rawData);
+  res.json(pivot);
+});
+
 app.get('/coaincome', (req, res) => {
 
 const connection = createConnection();
