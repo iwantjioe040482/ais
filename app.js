@@ -1455,7 +1455,16 @@ app.post('/cashexpense', (req, res) => {
 });
 
 async function fetchPivotData() {
+  
+const connection = createConnection();
 
+  connection.connect((err) => {
+    if (err) 
+    {
+        res.status(500).json({ error: 'Failed to connect to the database' });
+        return console.error(err.message);
+    }
+  
   const [rows] = await connection.execute(`
     SELECT 
       DATE_FORMAT(tl.gl_date, '%Y-%m') AS gl_month,
