@@ -1556,41 +1556,21 @@ app.get('/pivot', async (req, res) => {
 });
 
 app.get('/coaincome', async (req, res) => {
+  try {
+    const connection = await createConnection();
 
-const connection = await createConnection();
+    const [results] = await connection.query('SELECT * FROM vw_CoaIncomes');
 
-connection.connect((err) => {
-    if (err)
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-    // insert statment
-    let sql = 'select * from vw_CoaIncomes';
+    console.log(JSON.stringify(results));
 
-    // execute the insert statmentßß
-    connection.query(sql,  (err, results, fields) => {
-      if (err)
-      {
-        res.status(500).json({ error: 'Failed to execute query' });
-        return console.error(err.message);
-      }
-    
-      // Convert the query results to JSON
-      const jsonResult = JSON.stringify(results);
-      console.log(jsonResult);
+    await connection.end();
 
-      // close the database connection
-      connection.end();
-
-      res.json(results);
-    });
-  
+    res.json(results);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Failed to fetch data from vw_CoaIncomes' });
+  }
 });
-
-});
-
 
 app.get('/coaexpense', async (req, res) => {
 
