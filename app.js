@@ -352,310 +352,6 @@ app.get('/priority', async (req, res) => {
   }
 });
 
-app.post('/cimbincome', async (req, res) => {
-  try {
-    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-
-    const connection = await createConnection();
-
-    const sql = 'CALL IncomeCIMBLedger (?, ?, ?)';
-    const values = [part.coa_id, part.description, part.total];
-
-    const [results] = await connection.query(sql, values);
-
-    console.log(`Stored procedure executed. Result: ${JSON.stringify(results)}`);
-
-    await connection.end();
-
-    res.status(201).json(part);
-  } catch (err) {
-    console.error('Database error:', err.message);
-    res.status(500).json({ error: 'Failed to execute IncomeCIMBLedger' });
-  }
-});
-
-app.post('/cimbexpense', async (req, res) => {
-  try {
-    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-
-    const connection = await createConnection();
-
-    const sql = 'CALL InsertCIMBLedger (?, ?, ?, ?)';
-    const values = [part.coa_id, part.description, part.total, part.priority_id];
-
-    const [results] = await connection.query(sql, values);
-
-    console.log(`Stored procedure InsertCIMBLedger executed. Result: ${JSON.stringify(results)}`);
-
-    await connection.end();
-
-    res.status(201).json(part);
-  } catch (err) {
-    console.error('Database error:', err.message);
-    res.status(500).json({ error: 'Failed to execute InsertCIMBLedger' });
-  }
-});
-app.post('/allobankexpense', async (req, res) => {
-  try {
-    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-
-    const connection = await createConnection();
-
-    const sql = 'CALL InsertAlloBankLedger (?, ?, ?, ?)';
-    const values = [part.coa_id, part.description, part.total, part.priority_id];
-
-    const [results] = await connection.query(sql, values);
-
-    console.log(`Stored procedure InsertAlloBankLedger executed. Result: ${JSON.stringify(results)}`);
-
-    await connection.end();
-
-    res.status(201).json(part);
-  } catch (err) {
-    console.error('Database error:', err.message);
-    res.status(500).json({ error: 'Failed to execute InsertAlloBankLedger' });
-  }
-});
-app.post('/allobankincome', async (req, res) => {
-  try {
-    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-
-    const connection = await createConnection();
-
-    const sql = 'CALL IncomeAlloBankLedger (?, ?, ?)';
-    const values = [part.coa_id, part.description, part.total];
-
-    const [results] = await connection.query(sql, values);
-
-    console.log(`Stored procedure IncomeAlloBankLedger executed. Result: ${JSON.stringify(results)}`);
-
-    await connection.end();
-
-    res.status(201).json(part);
-  } catch (err) {
-    console.error('Database error:', err.message);
-    res.status(500).json({ error: 'Failed to execute IncomeAlloBankLedger' });
-  }
-});
-
-app.post('/bcaincome', async (req, res) => {
-  try {
-    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-
-    const connection = await createConnection();
-
-    const sql = 'CALL IncomeBCALedger (?, ?, ?)';
-    const values = [part.coa_id, part.description, part.total];
-
-    const [results] = await connection.query(sql, values);
-
-    console.log(`Stored procedure IncomeBCALedger executed. Result: ${JSON.stringify(results)}`);
-
-    await connection.end();
-
-    res.status(201).json(part);
-  } catch (err) {
-    console.error('Database error:', err.message);
-    res.status(500).json({ error: 'Failed to execute IncomeBCALedger' });
-  }
-});
-
-app.post('/bcaexpense', async (req, res) => {
-  try {
-    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-
-    const connection = await createConnection();
-
-    const sql = 'CALL InsertBCALedger (?, ?, ?, ?)';
-    const values = [part.coa_id, part.description, part.total, part.priority_id];
-
-    const [results] = await connection.query(sql, values);
-
-    console.log(`Stored procedure InsertBCALedger executed. Result: ${JSON.stringify(results)}`);
-
-    await connection.end();
-
-    res.status(201).json(part);
-  } catch (err) {
-    console.error('Database error:', err.message);
-    res.status(500).json({ error: 'Failed to execute InsertBCALedger' });
-  }
-});
-
-app.post('/gopayincome', async (req, res) => {
-  try {
-    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-
-    const connection = await createConnection();
-
-    const sql = 'CALL IncomeGoPayLedger (?, ?, ?)';
-    const values = [part.coa_id, part.description, part.total];
-
-    const [results] = await connection.query(sql, values);
-
-    console.log(`Stored procedure IncomeGoPayLedger executed. Result: ${JSON.stringify(results)}`);
-
-    await connection.end();
-
-    res.status(201).json(part);
-  } catch (err) {
-    console.error('Database error:', err.message);
-    res.status(500).json({ error: 'Failed to execute IncomeGoPayLedger' });
-  }
-});
-
-app.post('/gopayexpense', async (req, res) => {
-  try {
-    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-
-    const connection = await createConnection();
-
-    const sql = 'CALL InsertGoPayLedger (?, ?, ?, ?)';
-    const values = [part.coa_id, part.description, part.total, part.priority_id];
-
-    const [results] = await connection.query(sql, values);
-
-    console.log(`Stored procedure InsertGoPayLedger executed. Result: ${JSON.stringify(results)}`);
-
-    await connection.end();
-
-    res.status(201).json(part);
-  } catch (err) {
-    console.error('Database error:', err.message);
-    res.status(500).json({ error: 'Failed to execute InsertGoPayLedger' });
-  }
-});
-
-app.post('/ovoincome', async (req, res) => {
-  try {
-    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-
-    const connection = await createConnection();
-
-    const sql = 'CALL IncomeOvoLedger (?, ?, ?)';
-    const values = [part.coa_id, part.description, part.total];
-
-    const [results] = await connection.query(sql, values);
-
-    console.log(`Stored procedure IncomeOvoLedger executed. Result: ${JSON.stringify(results)}`);
-
-    await connection.end();
-
-    res.status(201).json(part);
-  } catch (err) {
-    console.error('Database error:', err.message);
-    res.status(500).json({ error: 'Failed to execute IncomeOvoLedger' });
-  }
-});
-
-app.post('/ovoexpense', async (req, res) => {
-  try {
-    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-
-    const connection = await createConnection();
-
-    const sql = 'CALL InsertOvoLedger (?, ?, ?, ?)';
-    const values = [part.coa_id, part.description, part.total, part.priority_id];
-
-    const [results] = await connection.query(sql, values);
-
-    console.log(`Stored procedure InsertOvoLedger executed. Result: ${JSON.stringify(results)}`);
-
-    await connection.end();
-
-    res.status(201).json(part);
-  } catch (err) {
-    console.error('Database error:', err.message);
-    res.status(500).json({ error: 'Failed to execute InsertOvoLedger' });
-  }
-});
-
-app.post('/danaincome', async (req, res) => {
-  try {
-    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-
-    const connection = await createConnection();
-
-    const sql = 'CALL IncomeDanaLedger (?, ?, ?)';
-    const values = [part.coa_id, part.description, part.total];
-
-    const [results] = await connection.query(sql, values);
-
-    console.log(`Stored procedure IncomeDanaLedger executed. Result: ${JSON.stringify(results)}`);
-
-    await connection.end();
-
-    res.status(201).json(part);
-  } catch (err) {
-    console.error('Database error:', err.message);
-    res.status(500).json({ error: 'Failed to execute IncomeDanaLedger' });
-  }
-});
-
-app.post('/danaexpense', async (req, res) => {
-  try {
-    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-
-    const connection = await createConnection();
-
-    const sql = 'CALL InsertDanaLedger (?, ?, ?, ?)';
-    const values = [part.coa_id, part.description, part.total, part.priority_id];
-
-    const [results] = await connection.query(sql, values);
-
-    console.log(`Stored procedure InsertDanaLedger executed. Result: ${JSON.stringify(results)}`);
-
-    await connection.end();
-
-    res.status(201).json(part);
-  } catch (err) {
-    console.error('Database error:', err.message);
-    res.status(500).json({ error: 'Failed to execute InsertDanaLedger' });
-  }
-});
-
-app.post('/shopeepayexpense', async (req, res) => {
-  try {
-    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-
-    const connection = await createConnection();
-
-    const sql = 'CALL InsertShopeePayLedger (?, ?, ?, ?)';
-    const values = [part.coa_id, part.description, part.total, part.priority_id];
-
-    const [results] = await connection.query(sql, values);
-
-    console.log(`InsertShopeePayLedger executed:`, results);
-
-    await connection.end();
-
-    res.status(201).json(part);
-  } catch (err) {
-    console.error('Error executing InsertShopeePayLedger:', err.message);
-    res.status(500).json({ error: 'Failed to insert ShopeePay expense record' });
-  }
-});
-app.post('/flazzexpense', async (req, res) => {
-  try {
-    const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-
-    const connection = await createConnection();
-
-    const sql = 'CALL InsertFlazzLedger (?, ?, ?, ?)';
-    const values = [part.coa_id, part.description, part.total, part.priority_id];
-
-    const [results] = await connection.query(sql, values);
-
-    console.log(`InsertFlazzLedger executed:`, results);
-
-    await connection.end();
-
-    res.status(201).json(part);
-  } catch (err) {
-    console.error('Error executing InsertFlazzLedger:', err.message);
-    res.status(500).json({ error: 'Failed to insert Flazz expense' });
-  }
-});
 
 async function handleLedgerCall(req, res, procedureName, hasPriority) {
   try {
@@ -680,6 +376,68 @@ async function handleLedgerCall(req, res, procedureName, hasPriority) {
   }
 }
 
+app.post('/allobankincome', (req, res) =>
+  handleLedgerCall(req, res, 'IncomeAlloBankLedger', false)
+);
+
+app.post('/allobankexpense', (req, res) =>
+  handleLedgerCall(req, res, 'InsertAlloBankLedger', true)
+);
+
+app.post('/bcaincome', (req, res) =>
+  handleLedgerCall(req, res, 'IncomeBcaLedger', false)
+);
+
+app.post('/bcaexpense', (req, res) =>
+  handleLedgerCall(req, res, 'InsertBcaLedger', true)
+);
+
+app.post('/cashincome', (req, res) =>
+  handleLedgerCall(req, res, 'IncomeCashLedger', false)
+);
+
+app.post('/cashexpense', (req, res) =>
+  handleLedgerCall(req, res, 'InsertCashLedger', true)
+);
+
+app.post('/cimbincome', (req, res) =>
+  handleLedgerCall(req, res, 'IncomeCimbLedger', false)
+);
+
+app.post('/cimbexpense', (req, res) =>
+  handleLedgerCall(req, res, 'InsertCimbLedger', true)
+);
+
+app.post('/danaincome', (req, res) =>
+  handleLedgerCall(req, res, 'IncomeDanaLedger', false)
+);
+
+app.post('/danaexpense', (req, res) =>
+  handleLedgerCall(req, res, 'InsertDanaLedger', true)
+);
+
+app.post('/flazzexpense', (req, res) =>
+  handleLedgerCall(req, res, 'InsertFlazzLedger', true)
+);
+
+app.post('/gopayincome', (req, res) =>
+  handleLedgerCall(req, res, 'IncomeGoPayLedger', false)
+);
+
+app.post('/gopayexpense', (req, res) =>
+  handleLedgerCall(req, res, 'InsertGopayLedger', true)
+);
+
+
+app.post('/hanaincome', (req, res) =>
+  handleLedgerCall(req, res, 'IncomeHanaLedger', false)
+);
+
+app.post('/hanaexpense', (req, res) =>
+  handleLedgerCall(req, res, 'InsertHanaLedger', true)
+);
+
+
 app.post('/octoincome', (req, res) =>
   handleLedgerCall(req, res, 'IncomeOctoLedger', false)
 );
@@ -688,12 +446,12 @@ app.post('/octoexpense', (req, res) =>
   handleLedgerCall(req, res, 'InsertOctoLedger', true)
 );
 
-app.post('/hanaincome', (req, res) =>
-  handleLedgerCall(req, res, 'IncomeHanaLedger', false)
+app.post('/ovoincome', (req, res) =>
+  handleLedgerCall(req, res, 'IncomeOvoLedger', false)
 );
 
-app.post('/hanaexpense', (req, res) =>
-  handleLedgerCall(req, res, 'InsertHanaLedger', true)
+app.post('/ovoexpense', (req, res) =>
+  handleLedgerCall(req, res, 'InsertOvoLedger', true)
 );
 
 app.post('/permataincome', (req, res) =>
@@ -704,13 +462,12 @@ app.post('/permataexpense', (req, res) =>
   handleLedgerCall(req, res, 'InsertPermataLedger', true)
 );
 
-app.post('/cashincome', (req, res) =>
-  handleLedgerCall(req, res, 'IncomeCashLedger', false)
+app.post('/shopeepayexpense', (req, res) =>
+  handleLedgerCall(req, res, 'InsertShopeePayLedger', true)
 );
 
-app.post('/cashexpense', (req, res) =>
-  handleLedgerCall(req, res, 'InsertCashLedger', true)
-);
+
+
 
 function transformToPivot(rows) {
   const pivotMap = {};
@@ -1169,4 +926,3 @@ app.delete('/items/:id', async (req, res) => {
     if (connection) await connection.end();
   }
 });
-
