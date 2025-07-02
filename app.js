@@ -2037,7 +2037,7 @@ app.get('/estwaterbill', async (req, res) => {
 
 app.get('/balance/:id', async (req, res) => {
 
-    const connection = await createConnection();
+    const connection = await createConnection(dbConfig);
     const id = req.params.id;
 
     connection.connect((err) => {
