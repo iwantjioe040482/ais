@@ -2094,7 +2094,7 @@ app.get('/balance/:id', async (req, res) => {
         }
         console.log(id);
         console.log(icoadid);
-        connection.query(sql, icoadid, (err, results, fields) => {
+        connection.query(sql, [icoadid], (err, results, fields) => {
           if (err) 
           {
             res.status(404).json({ error: 'Balance not found' });
