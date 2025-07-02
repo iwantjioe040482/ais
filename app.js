@@ -1182,6 +1182,51 @@ app.post('/flazzexpense', (req, res) => {
 
 });
 
+app.post('/cashincome', (req, res) => {
+  const newCashExpense = req.body;
+  const connection = createConnection();
+
+  connection.connect((err) => {
+    if (err) 
+    {
+        res.status(500).json({ error: 'Failed to connect to the database' });
+        return console.error(err.message);
+    }
+  
+    if (typeof newCashExpense === 'string') {
+        try {
+            part = JSON.parse(newCashExpense);
+        } catch (error) {
+            console.error('Invalid JSON string:', error);
+            return;
+        }
+    } else {
+        part = newCashExpense;
+    }
+
+    // insert statment
+    let sql = 'CALL IncomeCashLedger (?,?,?)';
+    let values = [part.coa_id,part.description,part.total];
+
+    // execute the insert statment
+    connection.query(sql, values, (err, results, fields) => {
+      if (err) 
+      {
+        res.status(500).json({ error: 'Failed to execute query' });
+        return console.error(err.message);
+      }
+  
+      console.log(`Inserted Rows: ${results.affectedRows}`);
+      // close the database connection
+      connection.end();
+      res.status(201).json(newCashExpense);
+    });
+  
+  
+  });
+
+});
+
 app.post('/cashexpense', (req, res) => {
   const newCashExpense = req.body;
   const connection = createConnection();
