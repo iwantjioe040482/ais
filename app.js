@@ -1,5 +1,5 @@
 const express = require('express');
-const mysql = require('mysql2/promise'); /
+const mysql = require('mysql2/promise'); 
 //const mysql = require('mysql');
 const app = express();
 const port = process.env.PORT || 3000; // Use the port provided by the host or default to 3000
