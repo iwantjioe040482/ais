@@ -43,7 +43,7 @@ const data = [
 // Middleware to parse JSON requests
 app.use(express.json());
 
-app.get('/parthome', (req, res) => {
+app.get('/parthome', async (req, res) => {
 
   const connection = await createConnection();
 //  const connection = createConnection();
@@ -80,7 +80,7 @@ app.get('/parthome', (req, res) => {
 
 });
 
-app.post('/parthome', (req, res) => {
+app.post('/parthome', async (req, res) => {
   const newPart = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -127,7 +127,7 @@ app.post('/parthome', (req, res) => {
 });
 
 
-app.get('/part', (req, res) => {
+app.get('/part', async (req, res) => {
 
   const connection = await createConnection();
   //const connection = createConnection();
@@ -165,7 +165,7 @@ app.get('/part', (req, res) => {
 });
 
 // Create (POST) a new item
-app.post('/part', (req, res) => {
+app.post('/part',async  (req, res) => {
   const newPart = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -211,7 +211,7 @@ app.post('/part', (req, res) => {
 
 });
 
-app.get('/location', (req, res) => {
+app.get('/location', async (req, res) => {
 
   const connection = await createConnection();
   //const connection = createConnection();
@@ -248,7 +248,7 @@ app.get('/location', (req, res) => {
 
 });
 
-app.get('/sparepart', (req, res) => {
+app.get('/sparepart', async (req, res) => {
 
   const connection = await createConnection();
   //const connection = createConnection();
@@ -285,7 +285,7 @@ app.get('/sparepart', (req, res) => {
 
 });
 
-app.get('/assets', (req, res) => {
+app.get('/assets', async (req, res) => {
 
   const connection = await createConnection();
   //const connection = createConnection();
@@ -325,7 +325,7 @@ app.get('/assets', (req, res) => {
 
 });
 
-function recurringtransaction(ssparams)
+async function recurringtransaction(ssparams)
 {
   var sql="";
 
@@ -370,7 +370,7 @@ function recurringtransaction(ssparams)
 
 };
 
-app.get('/tax', (req, res) => {
+app.get('/tax', async (req, res) => {
 
   const connection = await createConnection();
   //const connection = createConnection();
@@ -408,7 +408,7 @@ app.get('/tax', (req, res) => {
 
 });
 
-app.get('/expense', (req, res) => {
+app.get('/expense', async (req, res) => {
 
   const connection = await createConnection();
   //const connection = createConnection();
@@ -445,7 +445,7 @@ connection.connect((err) => {
 
 });
 
-app.get('/priority', (req, res) => {
+app.get('/priority', async (req, res) => {
 
 const connection = await createConnection();
 //const connection = createConnection();
@@ -482,7 +482,7 @@ connection.connect((err) => {
 
 });
 
-app.post('/cimbincome', (req, res) => {
+app.post('/cimbincome', async (req, res) => {
   const newCIMBExpense = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -528,7 +528,7 @@ app.post('/cimbincome', (req, res) => {
 
 });
 
-app.post('/cimbexpense', (req, res) => {
+app.post('/cimbexpense', async (req, res) => {
   const newCIMBExpense = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -574,7 +574,7 @@ app.post('/cimbexpense', (req, res) => {
 
 });
 
-app.post('/allobankexpense', (req, res) => {
+app.post('/allobankexpense', async (req, res) => {
   const newCIMBExpense = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -621,7 +621,7 @@ app.post('/allobankexpense', (req, res) => {
 });
 
 
-app.post('/allobankincome', (req, res) => {
+app.post('/allobankincome', async (req, res) => {
   const newCIMBExpense = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -667,7 +667,7 @@ app.post('/allobankincome', (req, res) => {
 
 });
 
-app.post('/bcaincome', (req, res) => {
+app.post('/bcaincome', async (req, res) => {
   const newCIMBExpense = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -713,7 +713,7 @@ app.post('/bcaincome', (req, res) => {
 
 });
 
-app.post('/bcaexpense', (req, res) => {
+app.post('/bcaexpense', async (req, res) => {
   const newCIMBExpense = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -759,7 +759,7 @@ app.post('/bcaexpense', (req, res) => {
 
 });
 
-app.post('/gopayincome', (req, res) => {
+app.post('/gopayincome', async (req, res) => {
   const newCIMBExpense = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -805,7 +805,7 @@ app.post('/gopayincome', (req, res) => {
 
 });
 
-app.post('/gopayexpense', (req, res) => {
+app.post('/gopayexpense', async (req, res) => {
   const newCIMBExpense = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -851,7 +851,7 @@ app.post('/gopayexpense', (req, res) => {
 
 });
 
-app.post('/ovoincome', (req, res) => {
+app.post('/ovoincome', async (req, res) => {
   const newCIMBExpense = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -898,7 +898,7 @@ app.post('/ovoincome', (req, res) => {
 });
 
 
-app.post('/ovoexpense', (req, res) => {
+app.post('/ovoexpense', async (req, res) => {
   const newCIMBExpense = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -944,7 +944,7 @@ app.post('/ovoexpense', (req, res) => {
 
 });
 
-app.post('/danaincome', (req, res) => {
+app.post('/danaincome', async (req, res) => {
   const newCIMBExpense = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -990,7 +990,7 @@ app.post('/danaincome', (req, res) => {
 
 });
 
-app.post('/danaexpense', (req, res) => {
+app.post('/danaexpense', async (req, res) => {
   const newCIMBExpense = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -1036,7 +1036,7 @@ app.post('/danaexpense', (req, res) => {
 
 });
 
-app.post('/octoincome', (req, res) => {
+app.post('/octoincome',async  (req, res) => {
   const newCIMBExpense = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -1082,7 +1082,7 @@ app.post('/octoincome', (req, res) => {
 
 });
 
-app.post('/octoexpense', (req, res) => {
+app.post('/octoexpense', async (req, res) => {
   const newCIMBExpense = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -1128,7 +1128,7 @@ app.post('/octoexpense', (req, res) => {
 
 });
 
-app.post('/shopeepayexpense', (req, res) => {
+app.post('/shopeepayexpense', async (req, res) => {
   const newCIMBExpense = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -1174,7 +1174,7 @@ app.post('/shopeepayexpense', (req, res) => {
 
 });
 
-app.post('/flazzexpense', (req, res) => {
+app.post('/flazzexpense', async (req, res) => {
   const newFlazzExpense = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -1221,7 +1221,7 @@ app.post('/flazzexpense', (req, res) => {
 });
 
 
-app.post('/hanaexpense', (req, res) => {
+app.post('/hanaexpense', async (req, res) => {
   const newCashExpense = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -1267,7 +1267,7 @@ app.post('/hanaexpense', (req, res) => {
 
 });
 
-app.post('/hanaincome', (req, res) => {
+app.post('/hanaincome', async (req, res) => {
   const newCashExpense = req.body;
   const connection = await createConnection();
   //const connection = createConnection();
@@ -1314,9 +1314,11 @@ app.post('/hanaincome', (req, res) => {
 });
 
 
-app.post('/permataexpense', (req, res) => {
+app.post('/permataexpense', async (req, res) => {
   const newCashExpense = req.body;
-  const connection = createConnection();
+  
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -1359,9 +1361,10 @@ app.post('/permataexpense', (req, res) => {
 
 });
 
-app.post('/permataincome', (req, res) => {
+app.post('/permataincome', async (req, res) => {
   const newCashExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -1404,9 +1407,10 @@ app.post('/permataincome', (req, res) => {
 
 });
 
-app.post('/cashincome', (req, res) => {
+app.post('/cashincome', async (req, res) => {
   const newCashExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -1449,9 +1453,9 @@ app.post('/cashincome', (req, res) => {
 
 });
 
-app.post('/cashexpense', (req, res) => {
+app.post('/cashexpense', async (req, res) => {
   const newCashExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -1551,9 +1555,9 @@ app.get('/pivot', async (req, res) => {
   }
 });
 
-app.get('/coaincome', (req, res) => {
+app.get('/coaincome', async (req, res) => {
 
-const connection = createConnection();
+const connection = await createConnection();
 
 connection.connect((err) => {
     if (err)
@@ -1588,9 +1592,9 @@ connection.connect((err) => {
 });
 
 
-app.get('/coaexpense', (req, res) => {
+app.get('/coaexpense', async (req, res) => {
 
-const connection = createConnection();
+const connection = await createConnection();
 
 connection.connect((err) => {
     if (err)
@@ -1625,7 +1629,7 @@ connection.connect((err) => {
 });
 
 
-app.get('/creditcard', (req, res) => {
+app.get('/creditcard', async (req, res) => {
 
   //let err=recurringtransaction("creditcard");
    //if (err=='Failed to connect to the database')
@@ -1641,7 +1645,7 @@ app.get('/creditcard', (req, res) => {
      //   res.json(err);
 //   }
 
-const connection = createConnection();
+const connection =await createConnection();
 
 connection.connect((err) => {
     if (err) 
@@ -1675,9 +1679,9 @@ connection.connect((err) => {
 
 });
 
-app.get('/insurance', (req, res) => {
+app.get('/insurance', async (req, res) => {
 
-  const connection = createConnection();
+  const connection = await createConnection();
 
   connection.connect((err) => {
       if (err) 
@@ -1711,9 +1715,9 @@ app.get('/insurance', (req, res) => {
 
 });
 
-app.post('/water', (req, res) => {
+app.post('/water', async (req, res) => {
   const newWater = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -1757,9 +1761,9 @@ app.post('/water', (req, res) => {
 });
 
 
-app.get('/water', (req, res) => {
+app.get('/water', async (req, res) => {
 
-  const connection = createConnection();
+  const connection = await createConnection();
 
   connection.connect((err) => {
       if (err) 
@@ -1794,9 +1798,9 @@ app.get('/water', (req, res) => {
 });
 
 
-app.post('/electricity', (req, res) => {
+app.post('/electricity', async (req, res) => {
   const newElectricity = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -1840,9 +1844,9 @@ app.post('/electricity', (req, res) => {
 });
 
 // Read (GET) all items
-app.get('/electricity', (req, res) => {
+app.get('/electricity', async (req, res) => {
 
-  const connection = createConnection();
+  const connection = await createConnection();
 
   connection.connect((err) => {
       if (err) 
@@ -1879,9 +1883,9 @@ app.get('/electricity', (req, res) => {
 
 
 // Create (POST) a new item
-app.post('/items', (req, res) => {
+app.post('/items', async (req, res) => {
   const newItem = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -1925,9 +1929,9 @@ app.post('/items', (req, res) => {
 });
 
 // Read (GET) all items
-app.get('/items', (req, res) => {
+app.get('/items', async (req, res) => {
 
-    const connection = createConnection();
+    const connection = await createConnection();
 
     connection.connect((err) => {
         if (err) 
@@ -1961,9 +1965,9 @@ app.get('/items', (req, res) => {
 
 });
 
-app.get('/estelectricbill', (req, res) => {
+app.get('/estelectricbill', async (req, res) => {
 
-    const connection = createConnection();
+    const connection = await createConnection();
 
     connection.connect((err) => {
         if (err) 
@@ -1996,9 +2000,9 @@ app.get('/estelectricbill', (req, res) => {
 
 });
 
-app.get('/estwaterbill', (req, res) => {
+app.get('/estwaterbill', async (req, res) => {
 
-    const connection = createConnection();
+    const connection = await createConnection();
 
     connection.connect((err) => {
         if (err) 
@@ -2031,9 +2035,9 @@ app.get('/estwaterbill', (req, res) => {
 
 });
 
-app.get('/balance/:id', (req, res) => {
+app.get('/balance/:id', async (req, res) => {
 
-    const connection = createConnection();
+    const connection = await createConnection();
     const id = req.params.id;
 
     connection.connect((err) => {
@@ -2112,9 +2116,9 @@ app.get('/balance/:id', (req, res) => {
 });
 
 // Read (GET) a specific item by ID
-app.get('/items/:id', (req, res) => {
+app.get('/items/:id', async (req, res) => {
 
-    const connection = createConnection();
+    const connection = await createConnection();
     const id = parseInt(req.params.id);
 
     connection.connect((err) => {
@@ -2150,7 +2154,7 @@ app.get('/items/:id', (req, res) => {
 });
 
 // Update (PUT) an item by ID
-app.put('/items/:id', (req, res) => {
+app.put('/items/:id', async (req, res) => {
   const id = parseInt(req.params.id);
   const updatedItem = req.body;
   const index = data.findIndex((item) => item.id === id);
@@ -2163,7 +2167,7 @@ app.put('/items/:id', (req, res) => {
 });
 
 // Delete (DELETE) an item by ID
-app.delete('/items/:id', (req, res) => {
+app.delete('/items/:id', async (req, res) => {
       const id = parseInt(req.params.id);
       const index = data.findIndex((item) => item.id === id);
       if (index === -1) {
