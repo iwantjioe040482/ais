@@ -48,7 +48,7 @@ app.get('/parthome', async (req, res) => {
   const connection = await createConnection();
 //  const connection = createConnection();
 
-  connection.connect((err) => {
+  await connection.connect(async (err) => {
       if (err) 
       {
           res.status(500).json({ error: 'Failed to connect to the database' });
@@ -59,7 +59,7 @@ app.get('/parthome', async (req, res) => {
       let sql = 'select part_id as id,part_name as name,part_number as sn from mst_vehicle_part where type_id="2"';
   
       // execute the insert statment
-      connection.query(sql,  (err, results, fields) => {
+      await connection.query(sql,  (err, results, fields) => {
         if (err) 
         {
           res.status(500).json({ error: 'Failed to execute query' });
@@ -1719,7 +1719,7 @@ app.post('/water', async (req, res) => {
   const newWater = req.body;
   const connection = await createConnection();
 
-  connection.connect((err) => {
+  await connection.connect(async (err) => {
     if (err) 
     {
         res.status(500).json({ error: 'Failed to connect to the database' });
@@ -1742,7 +1742,7 @@ app.post('/water', async (req, res) => {
     let values = [water.date,water.water_value];
 
     // execute the insert statment
-    connection.query(sql, values, (err, results, fields) => {
+    await connection.query(sql, values, async (err, results, fields) => {
       if (err) 
       {
         res.status(500).json({ error: 'Failed to execute query' });
@@ -1751,7 +1751,7 @@ app.post('/water', async (req, res) => {
   
       console.log(`Inserted Rows: ${results.affectedRows}`);
       // close the database connection
-      connection.end();
+      await connection.end();
       res.status(201).json(newWater);
     });
   
@@ -1765,7 +1765,7 @@ app.get('/water', async (req, res) => {
 
   const connection = await createConnection();
 
-  connection.connect((err) => {
+  connection.connect(async (err) => {
       if (err) 
       {
           res.status(500).json({ error: 'Failed to connect to the database' });
@@ -1776,7 +1776,7 @@ app.get('/water', async (req, res) => {
       let sql = 'select * from vw_water';
   
       // execute the insert statment
-      connection.query(sql,  (err, results, fields) => {
+      await connection.query(sql,  async (err, results, fields) => {
         if (err) 
         {
           res.status(500).json({ error: 'Failed to execute query' });
@@ -1785,10 +1785,10 @@ app.get('/water', async (req, res) => {
       
         // Convert the query results to JSON
         const jsonResult = JSON.stringify(results);
-        console.log(jsonResult);          
+        console.log(jsonResult);
 
         // close the database connection
-        connection.end();
+        await connection.end();
 
         res.json(results);
       });
