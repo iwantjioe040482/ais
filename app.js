@@ -1454,32 +1454,6 @@ app.post('/cashexpense', (req, res) => {
 
 });
 
-async function fetchPivotData() {
-
-const connection = createConnection();
-
-  connection.connect((err) => {
-    if (err) 
-    {
-        res.status(500).json({ error: 'Failed to connect to the database' });
-        return console.error(err.message);
-    }
-  
-  const [rows] = await connection.execute(`
-    SELECT 
-      DATE_FORMAT(tl.gl_date, '%Y-%m') AS gl_month,
-      mc.coa_name,
-      SUM(tl.total) AS total
-    FROM tr_ledger tl
-    JOIN mst_coa mc ON mc.coa_id = tl.coa_id
-    WHERE mc.coa_code LIKE '500%'
-    GROUP BY gl_month, mc.coa_name
-    ORDER BY gl_month, mc.coa_name
-  `);
-
-  return rows;
-};
-
 function transformToPivot(rows) {
   const pivotMap = {};
 
@@ -1513,9 +1487,28 @@ function transformToPivot(rows) {
 };
 
 app.get('/pivot', async (req, res) => {
-  const rawData = await fetchPivotData();
-  const pivot = transformToPivot(rawData);
-  res.json(pivot);
+  try {
+    const connection = await createConnection();
+    const [rows] = await connection.execute(`
+      SELECT 
+        DATE_FORMAT(tl.gl_date, '%Y-%m') AS gl_month,
+        mc.coa_name,
+        SUM(tl.total) AS total
+      FROM tr_ledger tl
+      JOIN mst_coa mc ON mc.coa_id = tl.coa_id
+      WHERE mc.coa_code LIKE '500%'
+      GROUP BY gl_month, mc.coa_name
+      ORDER BY gl_month, mc.coa_name
+    `);
+
+    await connection.end();
+
+    const pivot = transformToPivot(rows);
+    res.json(pivot);
+  } catch (error) {
+    console.error('Error in /pivot:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 app.get('/coaincome', (req, res) => {
