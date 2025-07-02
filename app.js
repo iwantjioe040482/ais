@@ -1,5 +1,6 @@
 const express = require('express');
-const mysql = require('mysql');
+const mysql = require('mysql2/promise'); /
+//const mysql = require('mysql');
 const app = express();
 const port = process.env.PORT || 3000; // Use the port provided by the host or default to 3000
 
@@ -11,8 +12,18 @@ const dbConfig = {
     password: 'Welcome123',
     database: 'ais'
   };
-  const createConnection = () => mysql.createConnection(dbConfig);
- 
+//  const createConnection = () => mysql.createConnection(dbConfig);
+
+const createConnection = async () => {
+  return await mysql.createConnection({
+    host: '172.17.12.127',
+    port: '3306',
+    user: 'dbuser',
+    password: 'Welcome123',
+    database: 'ais'
+  });
+};
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
@@ -34,7 +45,8 @@ app.use(express.json());
 
 app.get('/parthome', (req, res) => {
 
-  const connection = createConnection();
+  const connection = await createConnection();
+//  const connection = createConnection();
 
   connection.connect((err) => {
       if (err) 
@@ -70,7 +82,8 @@ app.get('/parthome', (req, res) => {
 
 app.post('/parthome', (req, res) => {
   const newPart = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -116,7 +129,8 @@ app.post('/parthome', (req, res) => {
 
 app.get('/part', (req, res) => {
 
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
       if (err) 
@@ -153,7 +167,8 @@ app.get('/part', (req, res) => {
 // Create (POST) a new item
 app.post('/part', (req, res) => {
   const newPart = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -198,7 +213,8 @@ app.post('/part', (req, res) => {
 
 app.get('/location', (req, res) => {
 
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
       if (err) 
@@ -234,7 +250,8 @@ app.get('/location', (req, res) => {
 
 app.get('/sparepart', (req, res) => {
 
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
       if (err) 
@@ -270,7 +287,8 @@ app.get('/sparepart', (req, res) => {
 
 app.get('/assets', (req, res) => {
 
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
       if (err) 
@@ -311,7 +329,8 @@ function recurringtransaction(ssparams)
 {
   var sql="";
 
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
       if (err) 
@@ -353,7 +372,8 @@ function recurringtransaction(ssparams)
 
 app.get('/tax', (req, res) => {
 
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
       if (err) 
@@ -390,7 +410,8 @@ app.get('/tax', (req, res) => {
 
 app.get('/expense', (req, res) => {
 
-const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
 connection.connect((err) => {
     if (err)
@@ -426,7 +447,8 @@ connection.connect((err) => {
 
 app.get('/priority', (req, res) => {
 
-const connection = createConnection();
+const connection = await createConnection();
+//const connection = createConnection();
 
 connection.connect((err) => {
     if (err)
@@ -462,7 +484,8 @@ connection.connect((err) => {
 
 app.post('/cimbincome', (req, res) => {
   const newCIMBExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -507,7 +530,8 @@ app.post('/cimbincome', (req, res) => {
 
 app.post('/cimbexpense', (req, res) => {
   const newCIMBExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -552,7 +576,8 @@ app.post('/cimbexpense', (req, res) => {
 
 app.post('/allobankexpense', (req, res) => {
   const newCIMBExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -598,7 +623,8 @@ app.post('/allobankexpense', (req, res) => {
 
 app.post('/allobankincome', (req, res) => {
   const newCIMBExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -643,7 +669,8 @@ app.post('/allobankincome', (req, res) => {
 
 app.post('/bcaincome', (req, res) => {
   const newCIMBExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -688,7 +715,8 @@ app.post('/bcaincome', (req, res) => {
 
 app.post('/bcaexpense', (req, res) => {
   const newCIMBExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -733,7 +761,8 @@ app.post('/bcaexpense', (req, res) => {
 
 app.post('/gopayincome', (req, res) => {
   const newCIMBExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -778,7 +807,8 @@ app.post('/gopayincome', (req, res) => {
 
 app.post('/gopayexpense', (req, res) => {
   const newCIMBExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -823,7 +853,8 @@ app.post('/gopayexpense', (req, res) => {
 
 app.post('/ovoincome', (req, res) => {
   const newCIMBExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -869,7 +900,8 @@ app.post('/ovoincome', (req, res) => {
 
 app.post('/ovoexpense', (req, res) => {
   const newCIMBExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -914,7 +946,8 @@ app.post('/ovoexpense', (req, res) => {
 
 app.post('/danaincome', (req, res) => {
   const newCIMBExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -959,7 +992,8 @@ app.post('/danaincome', (req, res) => {
 
 app.post('/danaexpense', (req, res) => {
   const newCIMBExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -1004,7 +1038,8 @@ app.post('/danaexpense', (req, res) => {
 
 app.post('/octoincome', (req, res) => {
   const newCIMBExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -1049,7 +1084,8 @@ app.post('/octoincome', (req, res) => {
 
 app.post('/octoexpense', (req, res) => {
   const newCIMBExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -1094,7 +1130,8 @@ app.post('/octoexpense', (req, res) => {
 
 app.post('/shopeepayexpense', (req, res) => {
   const newCIMBExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -1139,7 +1176,8 @@ app.post('/shopeepayexpense', (req, res) => {
 
 app.post('/flazzexpense', (req, res) => {
   const newFlazzExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -1185,7 +1223,8 @@ app.post('/flazzexpense', (req, res) => {
 
 app.post('/hanaexpense', (req, res) => {
   const newCashExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
@@ -1230,7 +1269,8 @@ app.post('/hanaexpense', (req, res) => {
 
 app.post('/hanaincome', (req, res) => {
   const newCashExpense = req.body;
-  const connection = createConnection();
+  const connection = await createConnection();
+  //const connection = createConnection();
 
   connection.connect((err) => {
     if (err) 
