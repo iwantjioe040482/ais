@@ -461,40 +461,37 @@ app.post('/shopeepayexpense', (req, res) =>
 );
 
 
-
-
 function transformToPivot(rows) {
   const pivotMap = {};
+  const monthMap = {
+    '01': 'jan', '02': 'feb', '03': 'mar', '04': 'apr',
+    '05': 'may', '06': 'jun', '07': 'jul', '08': 'aug',
+    '09': 'sep', '10': 'oct', '11': 'nov', '12': 'dec',
+  };
 
   rows.forEach(row => {
-    const month = row.gl_month;
     const coa = row.coa_name;
     const total = row.total;
+    const monthKey = monthMap[row.gl_month.split('-')[1]]; // '2025-04' → 'apr'
 
     if (!pivotMap[coa]) {
-      pivotMap[coa] = { coa_name: coa, apr: 0, may: 0, jun: 0, jul: 0 };
+      pivotMap[coa] = { coa_name: coa };
     }
 
-    // Mapping manual: sesuaikan gl_month ke field apr/may/jun/jul
-    switch (month) {
-      case '2025-04':
-        pivotMap[coa].apr = total;
-        break;
-      case '2025-05':
-        pivotMap[coa].may = total;
-        break;
-      case '2025-06':
-        pivotMap[coa].jun = total;
-        break;
-      case '2025-07':
-        pivotMap[coa].jul = total;
-        break;
+    // Inisialisasi bulan jika belum ada
+    if (!pivotMap[coa][monthKey]) {
+      pivotMap[coa][monthKey] = 0;
     }
+
+    pivotMap[coa][monthKey] += total; // pakai += untuk akumulasi
   });
 
-  //return Object.values(pivotMap);
-  return Object.values(pivotMap).sort((a, b) => a.coa_name.localeCompare(b.coa_name));
+  // Optional: sort coa_name
+  return Object.values(pivotMap).sort((a, b) =>
+    a.coa_name.localeCompare(b.coa_name, 'id', { sensitivity: 'base' })
+  );
 };
+
 
 app.get('/pivot', async (req, res) => {
   try {
