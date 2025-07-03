@@ -497,15 +497,7 @@ app.get('/pivot', async (req, res) => {
   try {
     const connection = await createConnection();
     const [rows] = await connection.execute(`
-      SELECT 
-        DATE_FORMAT(tl.gl_date, '%Y-%m') AS gl_month,
-        mc.coa_name,
-        SUM(tl.total) AS total
-      FROM tr_ledger tl
-      JOIN mst_coa mc ON mc.coa_id = tl.coa_id
-      WHERE mc.coa_code LIKE '500%'
-      GROUP BY gl_month, mc.coa_name
-      ORDER BY gl_month, mc.coa_name
+      SELECT * FROM vw_MonthlyExpenses
     `);
 
     await connection.end();
