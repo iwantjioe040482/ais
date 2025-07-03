@@ -15,13 +15,7 @@ const dbConfig = {
 //  const createConnection = () => mysql.createConnection(dbConfig);
 
 const createConnection = async () => {
-  return await mysql.createConnection({
-    host: '172.17.12.127',
-    port: '3306',
-    user: 'dbuser',
-    password: 'Welcome123',
-    database: 'ais'
-  });
+  return await mysql.createConnection(dbConfig);
 };
 
 app.listen(port, () => {
