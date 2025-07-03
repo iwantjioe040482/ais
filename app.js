@@ -492,7 +492,8 @@ function transformToPivot(rows) {
     }
   });
 
-  return Object.values(pivotMap);
+  //return Object.values(pivotMap);
+  return Object.values(pivotMap).sort((a, b) => a.coa_name.localeCompare(b.coa_name));
 };
 
 app.get('/pivot', async (req, res) => {
