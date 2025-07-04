@@ -493,6 +493,22 @@ function transformToPivot(rows) {
 };
 
 
+app.get('/monthlyexpense', async (req, res) => {
+  try {
+    const connection = await createConnection();
+    const [rows] = await connection.execute(`
+      SELECT * FROM vw_MonthlyExpenses
+    `);
+
+    await connection.end();
+
+    res.json(rows);
+  } catch (error) {
+    console.error('Error in /pivot:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 app.get('/pivot', async (req, res) => {
   try {
     const connection = await createConnection();
