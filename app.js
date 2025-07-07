@@ -460,6 +460,58 @@ app.post('/shopeepayexpense', (req, res) =>
   handleLedgerCall(req, res, 'InsertShopeePayLedger', true)
 );
 
+// Endpoint POST untuk menerima transaksi (versi async)
+app.post('/transfer', async (req, res) => {
+    try {
+    const { from, to,  amount } = req.body;
+
+    if (!from || !to || typeof amount !== 'number') {
+      return res.status(400).json({ error: 'Invalid input data' });
+    }
+
+        // Tentukan prosedur berdasarkan kombinasi from-to
+    let procedureName = null;
+
+    if (from === 'BCA' && to === 'Cash') {
+      procedureName = 'IsiCashFromBCALedger';
+    } else if (from === 'CIMB' && to === 'Cash') {
+      procedureName = 'IsiCashFromCIMBLedger';
+    } else if (from === 'BCA' && to === 'Flazz') {
+      procedureName = 'IsiFlazzFromBCALedger';
+    } else if (from === 'CIMB' && to === 'GoPay') {
+      procedureName = 'IsiGopayFromCIMBLedger';
+    } else {
+      return res.status(400).json({ error: 'Unsupported from-to combination' });
+    }
+
+    const description = `Transfer from ${from} to ${to}`;
+    const values = [description, amount];
+    const sql = `CALL ${procedureName}(?, ?)`;
+
+    
+    const [results] = await connection.query(sql, values);
+
+    console.log(`${procedureName} executed`, results);
+    await connection.end();
+
+    res.status(201).json(part);
+    
+
+    // Contoh proses async, misalnya simpan ke database
+    // await saveTransactionToDatabase({ from, to, amount });
+
+    console.log(`Transfer from ${from} to ${to} amount ${amount}`);
+
+    res.status(200).json({
+      message: 'Transfer recorded',
+      data: { from, to, amount }
+    });
+
+  } catch (error) {
+    console.error('Transfer error:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 function transformToPivot(rows) {
   const pivotMap = {};
