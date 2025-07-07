@@ -488,6 +488,7 @@ app.post('/transfer', async (req, res) => {
     const values = [description, amount];
     const sql = `CALL ${procedureName}(?, ?)`;
 
+    const connection = await createConnection();
     
     const [results] = await connection.query(sql, values);
 
