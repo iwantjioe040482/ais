@@ -495,14 +495,6 @@ app.post('/transfer', async (req, res) => {
     console.log(`${procedureName} executed`, results);
     await connection.end();
 
-    res.status(201).json(part);
-    
-
-    // Contoh proses async, misalnya simpan ke database
-    // await saveTransactionToDatabase({ from, to, amount });
-
-    console.log(`Transfer from ${from} to ${to} amount ${amount}`);
-
     res.status(200).json({
       message: 'Transfer recorded',
       data: { from, to, amount }
