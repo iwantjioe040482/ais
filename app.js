@@ -474,12 +474,20 @@ app.post('/transfer', async (req, res) => {
 
     if (from === 'BCA' && to === 'Cash') {
       procedureName = 'IsiCashFromBCALedger';
+    } else if (from === 'CIMB' && to === 'BCA') {
+      procedureName = 'IsiBCAFromCIMBLedger';
     } else if (from === 'CIMB' && to === 'Cash') {
       procedureName = 'IsiCashFromCIMBLedger';
     } else if (from === 'BCA' && to === 'Flazz') {
       procedureName = 'IsiFlazzFromBCALedger';
     } else if (from === 'CIMB' && to === 'GoPay') {
       procedureName = 'IsiGopayFromCIMBLedger';
+    } else if (from === 'CIMB' && to === 'Hana') {
+      procedureName = 'IsiHanaFromCIMBLedger';
+    } else if (from === 'CIMB' && to === 'Octo') {
+      procedureName = 'IsiOctoFromCIMBLedger';
+    } else if (from === 'CIMB' && to === 'Ovo') {
+      procedureName = 'IsiOctoFromCIMBLedger';
     } else {
       return res.status(400).json({ error: 'Unsupported from-to combination' });
     }
