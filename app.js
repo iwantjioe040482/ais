@@ -5,7 +5,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 //const mysql = require('mysql');
 const app = express();
-app.use(bodyParser.json());
+
+app.use(express.json()); // <--- WAJIB
 
 const port = process.env.PORT || 3000; // Use the port provided by the host or default to 3000
 
