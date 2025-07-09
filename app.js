@@ -35,6 +35,7 @@ app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
+    const connection = await createConnection();
     // Ambil user dari database
     const [rows] = await connection.query('SELECT * FROM mst_user WHERE uname = ?', [username]);
     if (rows.length === 0) {
