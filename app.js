@@ -33,8 +33,6 @@ app.listen(port, () => {
 // API login
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
-
-  console.log ("user"  + username)
   try {
     const connection = await createConnection();
     // Ambil user dari database
@@ -61,6 +59,20 @@ app.post('/login', async (req, res) => {
     console.error(err);
     res.status(500).json({ message: 'Terjadi kesalahan server' });
   }
+});
+
+app.post('/register', async (req, res) => {
+  const { username, password,name  } = req.body;
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const connection = await createConnection();
+  await connection.query(
+    'INSERT INTO ais.mst_user (uname, pwd,name) VALUES (?, ?,?)',
+    [username, hashedPassword,name]
+  );
+
+  res.json({ message: 'User registered' });
 });
 
 // Route terproteksi (contoh)
