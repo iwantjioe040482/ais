@@ -1,8 +1,13 @@
 const express = require('express');
 const mysql = require('mysql2/promise'); 
+const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 //const mysql = require('mysql');
 const app = express();
 const port = process.env.PORT || 3000; // Use the port provided by the host or default to 3000
+
+const SECRET_KEY = 'rahasia123'; // gunakan .env untuk keamanan
 
 // Set up the MySQL connection
 const dbConfig = {
@@ -20,6 +25,52 @@ const createConnection = async () => {
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
+});
+
+// API login
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    // Ambil user dari database
+    const [rows] = await connection.query('SELECT * FROM mst_user WHERE uname = ?', [username]);
+    if (rows.length === 0) {
+      return res.status(401).json({ message: 'User tidak ditemukan' });
+    }
+
+    const user = rows[0];
+
+    // Bandingkan password
+    const validPassword = await bcrypt.compare(password, user.pwd);
+    if (!validPassword) {
+      return res.status(401).json({ message: 'Password salah' });
+    }
+
+    // Buat token JWT
+    const token = jwt.sign({ userId: user.id, username: user.username }, SECRET_KEY, {
+      expiresIn: '1h'
+    });
+
+    res.json({ message: 'Login berhasil', token });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Terjadi kesalahan server' });
+  }
+});
+
+// Route terproteksi (contoh)
+app.get('/profile', async (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).json({ message: 'Token tidak ditemukan' });
+
+  const token = authHeader.split(' ')[1];
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    res.json({ message: 'Token valid', user: decoded });
+  } catch (err) {
+    res.status(401).json({ message: 'Token tidak valid' });
+  }
 });
 
  // Define a route to handle incoming requests
