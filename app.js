@@ -440,6 +440,14 @@ app.post('/octoexpense', (req, res) =>
   handleLedgerCall(req, res, 'InsertOctoLedger', true)
 );
 
+app.post('/mandiriincome', (req, res) =>
+  handleLedgerCall(req, res, 'IncomeMandiriLedger', true)
+);
+
+app.post('/mandiriexpense', (req, res) =>
+  handleLedgerCall(req, res, 'InsertMandiriLedger', true)
+);
+
 app.post('/ovoincome', (req, res) =>
   handleLedgerCall(req, res, 'IncomeOvoLedger', false)
 );
@@ -859,6 +867,7 @@ app.get('/balance/:id', async (req, res) => {
     "Flazz": 10,
     "GoPay": 5,
     "Hana": 57,
+    "Mandiri":61,
     "Octo": 24,
     "Ovo": 38,
     "Permata": 48,
