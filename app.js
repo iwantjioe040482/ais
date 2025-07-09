@@ -34,6 +34,7 @@ app.listen(port, () => {
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
+  console.log ("user"  + username)
   try {
     const connection = await createConnection();
     // Ambil user dari database
