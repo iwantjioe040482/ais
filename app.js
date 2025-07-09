@@ -496,6 +496,8 @@ app.post('/transfer', async (req, res) => {
       procedureName = 'IsiOctoFromCIMBLedger';
     } else if (from === 'CIMB' && to === 'Ovo') {
       procedureName = 'IsiOctoFromCIMBLedger';
+    } else if (from === 'Mandiri' && to === 'BCA') {
+      procedureName = 'IsiBCAFromMandiriLedger';
     } else {
       return res.status(400).json({ error: 'Unsupported from-to combination' });
     }
