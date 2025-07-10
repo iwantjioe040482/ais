@@ -827,12 +827,14 @@ app.post('/water', async (req, res) => {
 });
 
 app.get('/water', async (req, res) => {
+    const { token } = req.body;
+
   let connection;
 
   try {
     connection = await createConnection();
 
-    const [results] = await connection.query('SELECT * FROM vw_water');
+    const [results] = await connection.query('CALL sp_water(?)',[token]);
 
     console.log(JSON.stringify(results));
 
