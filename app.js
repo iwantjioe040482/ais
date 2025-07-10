@@ -853,7 +853,7 @@ app.get('/water',auth, async (req, res) => {
 
     console.log(JSON.stringify(results));
 
-    res.json(results);
+    res.json(results[0]);
   } catch (err) {
     console.error('Error executing /water:', err.message);
     res.status(500).json({ error: 'Failed to fetch water data' });
