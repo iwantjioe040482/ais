@@ -826,8 +826,23 @@ app.post('/water', async (req, res) => {
   }
 });
 
-app.get('/water', async (req, res) => {
-    const { token } = req.body;
+const auth = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // ambil setelah 'Bearer'
+
+    if (!token) return res.sendStatus(401);
+
+    jwt.verify(token, SECRET_KEY, (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
+};
+
+app.get('/water',auth, async (req, res) => {
+
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
 
   let connection;
 
