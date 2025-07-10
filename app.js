@@ -54,7 +54,7 @@ app.post('/login', async (req, res) => {
       expiresIn: '1h'
     });
 
-    const [rowsupdate] = await connection.query('update ais.mst_user set token=? WHERE user_id = ?',[token], [user.id]);
+    const [rowsupdate] = await connection.query('update ais.mst_user set token=? WHERE user_id = ?',[token, user.id]);
 
     res.json({ message: 'Login berhasil', token });
   } catch (err) {
