@@ -803,6 +803,7 @@ app.get('/insurance', async (req, res) => {
     if (connection) await connection.end();
   }
 });
+
 app.post('/water', async (req, res) => {
   let connection;
 
@@ -886,16 +887,21 @@ app.post('/electricity', async (req, res) => {
     if (connection) await connection.end();
   }
 });
-app.get('/electricity', async (req, res) => {
+
+app.get('/electricity', auth, async (req, res) => {
+
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
   let connection;
 
   try {
     connection = await createConnection();
 
-    const [results] = await connection.query('SELECT * FROM vw_electricity');
+    const [results] = await connection.query('CALL sp_electricity(?)',[token]);
 
     console.log(JSON.stringify(results));
-    res.json(results);
+    res.json(results[0]);
   } catch (err) {
     console.error('Failed to fetch electricity data:', err.message);
     res.status(500).json({ error: 'Failed to fetch electricity data' });
