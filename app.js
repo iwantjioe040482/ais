@@ -50,11 +50,11 @@ app.post('/login', async (req, res) => {
     }
 
     // Buat token JWT
-    const token = jwt.sign({ userId: user.id, username: user.uname }, SECRET_KEY, {
+    const token = jwt.sign({ userId: user.user_id, username: user.uname }, SECRET_KEY, {
       expiresIn: '1h'
     });
 
-    const [rowsupdate] = await connection.query('update ais.mst_user set token=? WHERE user_id = ?',[token, user.id]);
+    const [rowsupdate] = await connection.query('update ais.mst_user set token=? WHERE user_id = ?',[token, user.user_id]);
 
     res.json({ message: 'Login berhasil', token });
   } catch (err) {
