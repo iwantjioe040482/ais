@@ -264,7 +264,7 @@ app.get('/sparepart', async (req, res) => {
   }
 });
 
-app.get('/assets', async (req, res) => {
+app.post('/assets', async (req, res) => {
   
   const { token } = req.body;
 
