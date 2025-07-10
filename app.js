@@ -36,7 +36,7 @@ app.post('/login', async (req, res) => {
   try {
     const connection = await createConnection();
     // Ambil user dari database
-    const [rows] = await connection.query('SELECT * FROM mst_user WHERE uname = ?', [username]);
+    const [rows] = await connection.query('SELECT * FROM ais.mst_user WHERE uname = ?', [username]);
     if (rows.length === 0) {
       return res.status(401).json({ message: 'User tidak ditemukan' });
     }
@@ -54,12 +54,32 @@ app.post('/login', async (req, res) => {
       expiresIn: '1h'
     });
 
+    const [rowsupdate] = await connection.query('update ais.mst_user set token=? WHERE user_id = ?',[token], [user.id]);
+
     res.json({ message: 'Login berhasil', token });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Terjadi kesalahan server' });
   }
 });
+
+app.post('/logout', async (req, res) => {
+  const { token } = req.body;
+  try {
+    const connection = await createConnection();
+    // Ambil user dari database
+    const [rows] = await connection.query('update ais.mst_user set token=null WHERE token = ?', [token]);
+    if (rows.length === 0) {
+      return res.status(401).json({ message: 'User tidak ditemukan' });
+    }
+
+    res.json({ message: 'Logout berhasil', token });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Terjadi kesalahan server' });
+  }
+});
+
 
 app.post('/register', async (req, res) => {
   const { username, password,name  } = req.body;
