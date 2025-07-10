@@ -67,8 +67,10 @@ app.post('/logout', async (req, res) => {
   const { token } = req.body;
   try {
     const connection = await createConnection();
+    
     // Ambil user dari database
     const [rows] = await connection.query('update ais.mst_user set token=null WHERE token = ?', [token]);
+
     if (rows.length === 0) {
       return res.status(401).json({ message: 'User tidak ditemukan' });
     }
@@ -261,7 +263,11 @@ app.get('/sparepart', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch spare parts' });
   }
 });
+
 app.get('/assets', async (req, res) => {
+  
+  const { token } = req.body;
+
   try {
     const connection = await createConnection();
 
@@ -291,11 +297,13 @@ app.get('/assets', async (req, res) => {
       FROM ais.mst_asset a 
       INNER JOIN mst_user u ON u.user_id = a.user_id 
       INNER JOIN mst_type_asset t ON t.type_id = a.type_id  
+      WHERE u.token = ?
       ORDER BY a.est_value DESC
     `;
 
-    const [results] = await connection.query(sql);
-
+    //const [results] = await connection.query(sql);
+    const [results] = await connection.query(sql, [token]);
+    
     console.log(JSON.stringify(results));
 
     await connection.end();
