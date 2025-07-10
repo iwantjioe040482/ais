@@ -396,6 +396,26 @@ app.get('/tax', async (req, res) => {
   }
 });
 
+app.get('/dailyexpense', async (req, res) => {
+  try {
+    const connection = await createConnection();
+
+    const sql = 'SELECT * FROM vw_DailyExpenses1';
+
+    const [results] = await connection.query(sql);
+
+    console.log(JSON.stringify(results));
+
+    await connection.end();
+
+    res.json(results);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Failed to retrieve expense data' });
+  }
+});
+
+
 app.get('/expense', async (req, res) => {
   try {
     const connection = await createConnection();
