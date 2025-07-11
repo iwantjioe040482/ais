@@ -987,6 +987,10 @@ app.get('/estelectricbill', async (req, res) => {
   }
 });
 app.get('/estwaterbill', async (req, res) => {
+  
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
   let connection;
 
   try {
