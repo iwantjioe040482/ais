@@ -804,7 +804,10 @@ app.get('/insurance', async (req, res) => {
   }
 });
 
-app.post('/water', async (req, res) => {
+app.post('/water',auth, async (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
   let connection;
 
   try {
@@ -812,8 +815,12 @@ app.post('/water', async (req, res) => {
 
     connection = await createConnection();
 
-    const sql = 'INSERT INTO ais.water (date, water_value) VALUES (?, ?)';
-    const values = [newWater.date, newWater.water_value];
+    // const sql = 'INSERT INTO ais.water (date, water_value) VALUES (?, ?)';
+    // const values = [newWater.date, newWater.water_value];
+
+    const sql = 'CALL sp_insertwater(?,?,?)';
+    const values = [token,newWater.date, newWater.water_value];
+
 
     const [results] = await connection.query(sql, values);
 
