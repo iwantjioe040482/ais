@@ -1051,7 +1051,7 @@ app.get('/balance/:id',auth, async (req, res) => {
 
   try {
     const [results] = await connection.query(
-      'SELECT m.Balance FROM mst_coa m INNER JOIN coa_user c ON c.id_coa=m.coa_id INNER JOIN mst_user u ON u.user_id=c.id_user WHERE u.token=? and  m/coa_id = ?',
+      'SELECT m.Balance FROM mst_coa m INNER JOIN coa_user c ON c.id_coa=m.coa_id INNER JOIN mst_user u ON u.user_id=c.id_user WHERE u.token=? and  m.coa_id = ?',
       [token,coaId]
     );
 
