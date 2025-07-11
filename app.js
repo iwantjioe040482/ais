@@ -1018,7 +1018,10 @@ app.get('/estwaterbill', auth, async (req, res) => {
     if (connection) await connection.end();
   }
 });
-app.get('/balance/:id', async (req, res) => {
+app.get('/balance/:id',auth, async (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
   const connection = await createConnection(dbConfig);
   const id = req.params.id;
 
@@ -1048,8 +1051,8 @@ app.get('/balance/:id', async (req, res) => {
 
   try {
     const [results] = await connection.query(
-      'SELECT Balance FROM mst_coa WHERE coa_id = ?',
-      [coaId]
+      'SELECT m.Balance FROM mst_coa m INNER JOIN coa_user c ON c.id_coa=m.coa_id INNER JOIN mst_user u ON u.user_id=c.id_user WHERE u.token=? and  m/coa_id = ?',
+      [token,coaId]
     );
 
     console.log({ id, coaId, results });
