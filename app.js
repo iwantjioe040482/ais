@@ -30,6 +30,19 @@ app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
 
+const auth = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // ambil setelah 'Bearer'
+
+    if (!token) return res.sendStatus(401);
+
+    jwt.verify(token, SECRET_KEY, (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
+};
+
 // API login
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -834,18 +847,6 @@ app.post('/water',auth, async (req, res) => {
   }
 });
 
-const auth = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // ambil setelah 'Bearer'
-
-    if (!token) return res.sendStatus(401);
-
-    jwt.verify(token, SECRET_KEY, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
-        next();
-    });
-};
 
 app.get('/water',auth, async (req, res) => {
 
