@@ -965,20 +965,25 @@ app.get('/items', async (req, res) => {
     if (connection) await connection.end();
   }
 });
-app.get('/estelectricbill', async (req, res) => {
+app.get('/estelectricbill',auth, async (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
   let connection;
 
   try {
     connection = await createConnection();
 
-    const [results] = await connection.query('SELECT electricbillest FROM vw_estelectricbill');
+    // const [results] = await connection.query('SELECT electricbillest FROM vw_estelectricbill');
+    const [results] = await connection.query('CALL sp_estelectricbill(?)',[token]);
+    
 
     if (results.length === 0) {
       return res.status(404).json({ error: 'electricbillest not found' });
     }
 
     console.log(JSON.stringify(results));
-    res.json(results);
+    res.json(results[0]);
   } catch (err) {
     console.error('Error fetching electricbillest:', err.message);
     res.status(500).json({ error: 'Failed to fetch electricbillest' });
@@ -986,7 +991,7 @@ app.get('/estelectricbill', async (req, res) => {
     if (connection) await connection.end();
   }
 });
-app.get('/estwaterbill', async (req, res) => {
+app.get('/estwaterbill', auth, async (req, res) => {
   
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
