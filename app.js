@@ -992,7 +992,9 @@ app.get('/estwaterbill', async (req, res) => {
   try {
     connection = await createConnection();
 
-    const [results] = await connection.query('SELECT waterbillest FROM vw_estwaterbill');
+    //const [results] = await connection.query('SELECT waterbillest FROM vw_estwaterbill');
+    const [results] = await connection.query('CALL sp_estwaterbill (?)',[token]);
+    
 
     if (results.length === 0) {
       return res.status(404).json({ error: 'waterbillest not found' });
