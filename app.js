@@ -863,7 +863,11 @@ app.get('/water',auth, async (req, res) => {
   }
 });
 
-app.post('/electricity', async (req, res) => {
+app.post('/electricity',auth, async (req, res) => {
+  
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
   let connection;
 
   try {
@@ -873,8 +877,9 @@ app.post('/electricity', async (req, res) => {
 
     connection = await createConnection();
 
-    const sql = 'INSERT INTO ais.electricity (date, electricity_value) VALUES (?, ?)';
-    const values = [electricity.date, electricity.electricity_value];
+    //const sql = 'INSERT INTO ais.electricity (date, electricity_value) VALUES (?, ?)';
+    const sql = 'CALL sp_insertelectricity(?,?,?)';
+    const values = [token,electricity.date, electricity.electricity_value];
 
     const [results] = await connection.query(sql, values);
 
