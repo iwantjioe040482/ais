@@ -386,7 +386,10 @@ async function recurringtransaction(ssparams) {
   }
 }
 
-app.get('/tax', async (req, res) => {
+app.get('/tax',auth, async (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
   try {
     const connection = await createConnection();
 
@@ -400,11 +403,11 @@ app.get('/tax', async (req, res) => {
         u.name AS username
       FROM ais.recurring r
       INNER JOIN ais.mst_user u ON u.user_id = r.user_id
-      WHERE r.type_id = "3"
+      WHERE r.type_id = "3" and u.token=?
       ORDER BY r.name
     `;
 
-    const [results] = await connection.query(sql);
+    const [results] = await connection.query(sql,[token]);
 
     console.log(JSON.stringify(results));
 
