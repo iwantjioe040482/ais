@@ -417,19 +417,24 @@ app.get('/tax', async (req, res) => {
   }
 });
 
-app.get('/dailyexpense', async (req, res) => {
+app.get('/dailyexpense',auth , async (req, res) => {
+  
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
   try {
     const connection = await createConnection();
 
-    const sql = 'SELECT * FROM vw_DailyExpenses1';
+    // const sql = 'SELECT * FROM vw_DailyExpenses1';
+    const sql = 'CALL sp_TransactiongetDailyExpense(?)';
 
-    const [results] = await connection.query(sql);
+    const [results] = await connection.query(sql,[token]);
 
     console.log(JSON.stringify(results));
 
     await connection.end();
 
-    res.json(results);
+    res.json(results[0]);
   } catch (err) {
     console.error('Database error:', err.message);
     res.status(500).json({ error: 'Failed to retrieve expense data' });
