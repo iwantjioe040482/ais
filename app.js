@@ -437,13 +437,19 @@ app.get('/dailyexpense', async (req, res) => {
 });
 
 
-app.get('/expense', async (req, res) => {
+app.get('/expense', auth,async (req, res) => {
+  
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
   try {
     const connection = await createConnection();
 
-    const sql = 'SELECT * FROM vw_DailyExpenses';
+    //const sql = 'SELECT * FROM vw_DailyExpenses';
+    const sql = 'CALL sp_TransactiongetExpense(?)';
+    
 
-    const [results] = await connection.query(sql);
+    const [results] = await connection.query(sql,[token]);
 
     console.log(JSON.stringify(results));
 
