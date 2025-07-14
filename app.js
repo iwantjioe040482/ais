@@ -825,7 +825,7 @@ app.get('/insurance', auth,async (req, res) => {
 
     console.log('Insurance recurring results:', results);
 
-    res.json(results[0]);
+    res.json(results);
   } catch (err) {
     console.error('Error executing /insurance:', err.message);
     res.status(500).json({ error: 'Failed to fetch insurance recurring data' });
