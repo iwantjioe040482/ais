@@ -497,7 +497,7 @@ async function handleLedgerCall(req, res, procedureName, hasPriority) {
 
     const values = hasPriority
       ? [token,part.coa_id, part.description, part.total, part.priority_id]
-      : [part.coa_id, part.description, part.total];
+      : [token,part.coa_id, part.description, part.total];
 
     const sql = `CALL ${procedureName} (${values.map(() => '?').join(', ')})`;
 
