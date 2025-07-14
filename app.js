@@ -1040,7 +1040,7 @@ app.get('/balance/:id',auth, async (req, res) => {
     "Ovo": 38,
     "Permata": 48,
     "ShopeePay": 7,
-    "Blue":62
+    "Blu":62
   };
 
   const coaId = coaMap[id];
