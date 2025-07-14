@@ -717,7 +717,7 @@ app.get('/monthlyexpense', auth ,async (req, res) => {
     
     await connection.end();
 
-    res.json(rows);
+    res.json(rows[0]);
   } catch (error) {
     console.error('Error in /pivot:', error);
     res.status(500).json({ error: 'Internal server error' });
