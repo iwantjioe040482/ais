@@ -455,7 +455,7 @@ app.get('/expense', auth,async (req, res) => {
 
     await connection.end();
 
-    res.json(results);
+    res.json(results[0]);
   } catch (err) {
     console.error('Database error:', err.message);
     res.status(500).json({ error: 'Failed to retrieve expense data' });
