@@ -488,12 +488,15 @@ app.get('/priority', async (req, res) => {
 
 
 async function handleLedgerCall(req, res, procedureName, hasPriority) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+  
   try {
     const part = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     const connection = await createConnection();
 
     const values = hasPriority
-      ? [part.coa_id, part.description, part.total, part.priority_id]
+      ? [token,part.coa_id, part.description, part.total, part.priority_id]
       : [part.coa_id, part.description, part.total];
 
     const sql = `CALL ${procedureName} (${values.map(() => '?').join(', ')})`;
