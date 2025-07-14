@@ -799,7 +799,10 @@ app.get('/creditcard', async (req, res) => {
     if (connection) await connection.end();
   }
 });
-app.get('/insurance', async (req, res) => {
+app.get('/insurance', auth,async (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
   let connection;
 
   try {
@@ -814,15 +817,15 @@ app.get('/insurance', async (req, res) => {
         DATEDIFF(r.end_to, r.start_from) - 1 AS timeline,
         u.name AS username
       FROM ais.recurring r
-      INNER JOIN ais.mst_user u ON u.user_id = r.user_id
-      WHERE r.type_id = "1"
+      INNER JOIN ais.mst_user u ON u.user_id = r.user_id 
+      WHERE r.type_id = "1" and u.token=?
     `;
 
-    const [results] = await connection.query(sql);
+    const [results] = await connection.query(sql,[token]);
 
     console.log('Insurance recurring results:', results);
 
-    res.json(results);
+    res.json(results[0]);
   } catch (err) {
     console.error('Error executing /insurance:', err.message);
     res.status(500).json({ error: 'Failed to fetch insurance recurring data' });
