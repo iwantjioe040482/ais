@@ -767,7 +767,10 @@ app.get('/coaexpense', async (req, res) => {
     if (connection) await connection.end();
   }
 });
-app.get('/creditcard', async (req, res) => {
+app.get('/creditcard',auth, async (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
   let connection;
 
   try {
@@ -783,11 +786,11 @@ app.get('/creditcard', async (req, res) => {
         u.name AS username
       FROM ais.recurring r
       INNER JOIN ais.mst_user u ON u.user_id = r.user_id
-      WHERE r.type_id = "2"
+      WHERE r.type_id = "2" and u.token=?
       ORDER BY r.name
     `;
 
-    const [results] = await connection.query(sql);
+    const [results] = await connection.query(sql,[token]);
 
     console.log('Credit card recurring results:', results);
 
