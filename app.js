@@ -786,7 +786,7 @@ app.get('/coaexpense',auth, async (req, res) => {
 
     console.log('vw_CoaExpenses results:', results);
 
-    res.json(results);
+    res.json(results[0]);
   } catch (err) {
     console.error('Error fetching vw_CoaExpenses:', err.message);
     res.status(500).json({ error: 'Failed to fetch data from vw_CoaExpenses' });
