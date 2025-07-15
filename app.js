@@ -729,7 +729,9 @@ app.get('/pivot',auth, async (req, res) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
 
-  try {
+     console.log('auth:', authHeader,token);
+
+     try {
     const connection = await createConnection();
     // const [rows] = await connection.execute(`
     //   SELECT * FROM vw_MonthlyExpenses
@@ -741,7 +743,9 @@ app.get('/pivot',auth, async (req, res) => {
 
     await connection.end();
 
-    const pivot = transformToPivot(rows[0]);
+     console.log('pivot results:', rows);
+
+    const pivot = transformToPivot(rows);
     res.json(pivot);
   } catch (error) {
     console.error('Error in /pivot:', error);
