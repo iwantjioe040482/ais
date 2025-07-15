@@ -615,7 +615,10 @@ app.post('/shopeepayexpense', (req, res) =>
 );
 
 // Endpoint POST untuk menerima transaksi (versi async)
-app.post('/transfer', async (req, res) => {
+app.post('/transfer', auth,async (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
     try {
     const { from, to,  amount } = req.body;
 
@@ -649,7 +652,7 @@ app.post('/transfer', async (req, res) => {
     }
 
     const description = `Transfer from ${from} to ${to}`;
-    const values = [description, amount];
+    const values = [token,description, amount];
     const sql = `CALL ${procedureName}(?, ?)`;
 
     const connection = await createConnection();
