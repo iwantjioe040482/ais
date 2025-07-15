@@ -724,12 +724,19 @@ app.get('/monthlyexpense', auth ,async (req, res) => {
   }
 });
 
-app.get('/pivot', async (req, res) => {
+app.get('/pivot',auth, async (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
   try {
     const connection = await createConnection();
+    // const [rows] = await connection.execute(`
+    //   SELECT * FROM vw_MonthlyExpenses
+    // `);
     const [rows] = await connection.execute(`
-      SELECT * FROM vw_MonthlyExpenses
-    `);
+      CALL sp_MonthlyExpenses(?)
+    `,[token]);
+
 
     await connection.end();
 
