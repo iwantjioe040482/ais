@@ -725,6 +725,7 @@ app.get('/monthlyexpense', auth ,async (req, res) => {
 });
 
 app.get('/pivot',auth, async (req, res) => {
+  
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
 
@@ -740,7 +741,7 @@ app.get('/pivot',auth, async (req, res) => {
 
     await connection.end();
 
-    const pivot = transformToPivot(rows);
+    const pivot = transformToPivot(rows[0]);
     res.json(pivot);
   } catch (error) {
     console.error('Error in /pivot:', error);
