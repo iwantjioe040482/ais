@@ -754,16 +754,20 @@ app.get('/pivot',auth, async (req, res) => {
   }
 });
 
-app.get('/coaincome', async (req, res) => {
+app.get('/coaincome',auth, async (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
   let connection;
   try {
     connection = await createConnection();
 
-    const [results] = await connection.query('SELECT * FROM vw_CoaIncomes');
+    //const [results] = await connection.query('SELECT * FROM vw_CoaIncomes');
+    const [results] = await connection.query('CALL sp_CoaIncomes(?)',[token]);
 
     console.log('vw_CoaIncomes results:', results);
 
-    res.json(results);
+    res.json(results[0]);
   } catch (err) {
     console.error('Error fetching vw_CoaIncomes:', err.message);
     res.status(500).json({ error: 'Failed to fetch data from vw_CoaIncomes' });
