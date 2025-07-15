@@ -743,9 +743,11 @@ app.get('/pivot',auth, async (req, res) => {
 
     await connection.end();
 
-     console.log('pivot results:', rows[0]);
 
     const pivot = transformToPivot(rows[0]);
+
+     console.log('pivot results:', pivot);
+     
     res.json(pivot);
   } catch (error) {
     console.error('Error in /pivot:', error);
