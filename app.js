@@ -653,7 +653,7 @@ app.post('/transfer', auth,async (req, res) => {
 
     const description = `Transfer from ${from} to ${to}`;
     const values = [token,description, amount];
-    const sql = `CALL ${procedureName}(?, ?)`;
+    const sql = `CALL ${procedureName}(?,?, ?)`;
 
     const connection = await createConnection();
     
