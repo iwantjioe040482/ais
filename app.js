@@ -772,12 +772,17 @@ app.get('/coaincome', async (req, res) => {
   }
 });
 
-app.get('/coaexpense', async (req, res) => {
+app.get('/coaexpense',auth, async (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
   let connection;
   try {
     connection = await createConnection();
 
-    const [results] = await connection.query('SELECT * FROM vw_CoaExpenses');
+    // const [results] = await connection.query('SELECT * FROM vw_CoaExpenses');
+    const [results] = await connection.query('CALL sp_CoaExpenses(?)',[token]);
+    
 
     console.log('vw_CoaExpenses results:', results);
 
