@@ -659,7 +659,7 @@ app.post('/transfer', auth,async (req, res) => {
     
     const [results] = await connection.query(sql, values);
 
-    console.log(`${procedureName} executed`, results[0]);
+    console.log(`${procedureName} executed`, results);
     await connection.end();
 
     res.status(200).json({
