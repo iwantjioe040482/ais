@@ -102,12 +102,27 @@ app.post('/register', async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const connection = await createConnection();
-  await connection.query(
-    'INSERT INTO ais.mst_user (uname, pwd,name) VALUES (?, ?,?)',
-    [username, hashedPassword,name]
-  );
+    try {
+      const [result] = await connection.query(
+        'INSERT INTO ais.mst_user (uname, pwd,name) VALUES (?, ?,?)',
+        [username, hashedPassword,name]
+      );
 
-  res.json({ message: 'User registered' });
+      const userId = result.insertId;
+
+      // Insert ke coa_user dengan id user
+      await connection.query(
+        'INSERT INTO ais.coa_user select m.coa_id,(?),m.coa_name as Alias,m.Balance,m.updated_at,m.last_dormant from ais.mst_coa m',
+        [userId]
+      );
+
+      res.json({ message: 'User registered' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Registration failed' });
+  } finally {
+    await connection.end();
+  }
 });
 
 // Route terproteksi (contoh)
@@ -1106,7 +1121,7 @@ app.get('/balance/:id',auth, async (req, res) => {
 
   try {
     const [results] = await connection.query(
-      'SELECT c.Balance FROM mst_coa m INNER JOIN coa_user c ON c.id_coa=m.coa_id INNER JOIN mst_user u ON u.user_id=c.id_user WHERE u.token=? and  m.coa_id = ?',
+      'SELECT c.Balance,c.updated_at FROM mst_coa m INNER JOIN coa_user c ON c.id_coa=m.coa_id INNER JOIN mst_user u ON u.user_id=c.id_user WHERE u.token=? and  m.coa_id = ?',
       [token,coaId]
     );
 
