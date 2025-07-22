@@ -497,7 +497,7 @@ app.post('/submitaccess', auth,async (req, res) => {
 
     await connection.end();
 
-    res.json(results);
+    res.json(insertResults);
   } catch (err) {
     console.error('Database error:', err.message);
     res.status(500).json({ error: 'Failed to retrieve access data' });
