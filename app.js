@@ -465,6 +465,8 @@ app.post('/submitaccess', auth,async (req, res) => {
   const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
   const data=req.body;
   
+  console.log(data);
+
   if (!Array.isArray(data)) {
     return res.status(400).json({ message: 'Data harus berupa array' });
   }
