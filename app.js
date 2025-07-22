@@ -481,7 +481,7 @@ app.post('/submitaccess', auth,async (req, res) => {
     await connection.query('CALL sp_DeleteMenuAccess(?)', [token]);
 
     for (const item of data) {
-      const [results]=await connection.query('CALL sp_InsertMenuAccess(?, ?)', [token, item.coa_id]);
+      const [results] = await connection.query('CALL sp_InsertMenuAccess(?, ?)', [token, item.coa_id]);
     }
 
     // //const sql = 'SELECT * FROM vw_DailyExpenses';
@@ -494,7 +494,7 @@ app.post('/submitaccess', auth,async (req, res) => {
 
     await connection.end();
 
-    res.json(results[0]);
+    res.json(results);
   } catch (err) {
     console.error('Database error:', err.message);
     res.status(500).json({ error: 'Failed to retrieve access data' });
