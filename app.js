@@ -479,7 +479,7 @@ app.post('/submitaccess', auth,async (req, res) => {
     console.log (values);
 
     for (const item of data) {
-      await conn.query('CALL sp_InsertMenuAccess(?, ?)', [token, item.id_coa]);
+      await connection.query('CALL sp_InsertMenuAccess(?, ?)', [token, item.id_coa]);
     }
 
     // //const sql = 'SELECT * FROM vw_DailyExpenses';
