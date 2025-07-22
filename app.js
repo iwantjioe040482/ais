@@ -475,7 +475,7 @@ app.post('/submitaccess', auth,async (req, res) => {
   try {
     const connection = await createConnection();
 
-    const values = data.map(item => [token, item.id_coa]);
+    const values = data.map(item => [token, item.coa_id]);
     //const sql = 'SELECT * FROM vw_DailyExpenses';
     const sql = 'CALL sp_InsertMenuAccess (?)';
     
