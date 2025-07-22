@@ -459,6 +459,37 @@ app.get('/dailyexpense',auth , async (req, res) => {
   }
 });
 
+app.post('/submitaccess', auth,async (req, res) => {
+  
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+  const data=req.body;
+  
+  if (!Array.isArray(data)) {
+    return res.status(400).json({ message: 'Data harus berupa array' });
+  }
+
+
+  try {
+    const connection = await createConnection();
+
+    const values = data.map(item => [token, item.id_coa]);
+    //const sql = 'SELECT * FROM vw_DailyExpenses';
+    const sql = 'INSERT INTO coa_user (id_user, id_coa) VALUES ?';
+    
+
+    const [results] = await connection.query(sql,[values]);
+
+    console.log(JSON.stringify(results));
+
+    await connection.end();
+
+    res.json(results[0]);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Failed to retrieve access data' });
+  }
+});
 
 
 app.post('/access', auth,async (req, res) => {
