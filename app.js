@@ -481,7 +481,7 @@ app.post('/submitaccess', auth,async (req, res) => {
     await connection.query('CALL sp_DeleteMenuAccess(?)', [token]);
 
     for (const item of data) {
-      await connection.query('CALL sp_InsertMenuAccess(?, ?)', [token, item.id_coa]);
+      await connection.query('CALL sp_InsertMenuAccess(?, ?)', [token, item.coa_id]);
     }
 
     // //const sql = 'SELECT * FROM vw_DailyExpenses';
