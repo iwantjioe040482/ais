@@ -1104,6 +1104,7 @@ app.get('/balance/:id',auth, async (req, res) => {
     "Flazz": 10,
     "GoPay": 5,
     "Hana": 57,
+    "HSBC":58,
     "Mandiri":61,
     "Octo": 24,
     "Ovo": 38,
