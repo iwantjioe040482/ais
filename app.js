@@ -461,7 +461,7 @@ app.get('/dailyexpense',auth , async (req, res) => {
 
 
 
-app.get('/access', auth,async (req, res) => {
+app.post('/access', auth,async (req, res) => {
   
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
@@ -482,7 +482,7 @@ app.get('/access', auth,async (req, res) => {
     res.json(results[0]);
   } catch (err) {
     console.error('Database error:', err.message);
-    res.status(500).json({ error: 'Failed to retrieve expense data' });
+    res.status(500).json({ error: 'Failed to retrieve access data' });
   }
 });
 
