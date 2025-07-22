@@ -465,6 +465,8 @@ app.post('/submitaccess', auth,async (req, res) => {
   const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
   const data=req.body;
   
+  let insertResults = [];
+
   console.log(data);
 
   if (!Array.isArray(data)) {
@@ -482,6 +484,7 @@ app.post('/submitaccess', auth,async (req, res) => {
 
     for (const item of data) {
       const [results] = await connection.query('CALL sp_InsertMenuAccess(?, ?)', [token, item.coa_id]);
+      insertResults.push(result);
     }
 
     // //const sql = 'SELECT * FROM vw_DailyExpenses';
@@ -490,7 +493,7 @@ app.post('/submitaccess', auth,async (req, res) => {
 
     // const [results] = await connection.query(sql,[values]);
 
-    console.log(JSON.stringify(results));
+    console.log(JSON.stringify(insertResults));
 
     await connection.end();
 
