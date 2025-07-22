@@ -477,11 +477,16 @@ app.post('/submitaccess', auth,async (req, res) => {
 
     const values = data.map(item => [token, item.coa_id]);
     console.log (values);
-    //const sql = 'SELECT * FROM vw_DailyExpenses';
-    const sql = 'CALL sp_InsertMenuAccess (?)';
+
+    for (const item of data) {
+      await conn.query('CALL sp_InsertMenuAccess(?, ?)', [token, item.id_coa]);
+    }
+
+    // //const sql = 'SELECT * FROM vw_DailyExpenses';
+    // const sql = 'CALL sp_InsertMenuAccess (?)';
     
 
-    const [results] = await connection.query(sql,[values]);
+    // const [results] = await connection.query(sql,[values]);
 
     console.log(JSON.stringify(results));
 
