@@ -109,6 +109,9 @@ app.post('/changepass', async (req, res) => {
     try {
       
       const [rows] = await connection.query('SELECT pwd FROM ais.mst_user WHERE token = ?', [token]);
+      if (rows.length === 0) {
+        return res.status(404).json({ message: 'User tidak ditemukan' });
+      }
 
        // Bandingkan password lama
         const match = await bcrypt.compare(oldpassword,  rows[0].pwd); 
