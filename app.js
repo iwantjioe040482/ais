@@ -113,7 +113,7 @@ app.post('/changepass', async (req, res) => {
       console.log(JSON.stringify(rows));
 
        // Bandingkan password lama
-        const match = oldpassword === rows[0].pwd;
+        const match = hashedPassword === rows[0].pwd;
         if (!match) {
             return res.status(401).json({ message: 'Password lama salah' });
         }
