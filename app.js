@@ -126,7 +126,7 @@ app.post('/changepass', async (req, res) => {
         return { success: true, message: 'Password berhasil diubah' };
 
 
-      // res.json({ message: 'User registered' });
+       res.json({ message: 'Password berhasil diubah' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Change Password failed' });
