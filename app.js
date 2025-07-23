@@ -111,7 +111,7 @@ app.post('/changepass', async (req, res) => {
       const [rows] = await connection.query('SELECT pwd FROM ais.mst_user WHERE token = ?', [token]);
 
        // Bandingkan password lama
-        constmatch = await bcrypt.compare(oldpassword,  rows[0].pwd);
+        const match = await bcrypt.compare(oldpassword,  rows[0].pwd); 
         // const match = hashedPassword === rows[0].pwd;
         if (!match) {
             return res.status(401).json({ message: 'Password lama salah' });
