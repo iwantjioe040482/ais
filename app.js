@@ -123,10 +123,8 @@ app.post('/changepass', async (req, res) => {
         // Lanjut update password di database:
         await connection.query("UPDATE ais.mst_user  SET pwd = ? WHERE token = ?", [hashednewPassword, token]);
 
-        return { success: true, message: 'Password berhasil diubah' };
+        return res.json({ success: true, message: 'Password berhasil diubah' });
 
-
-       res.json({ message: 'Password berhasil diubah' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Change Password failed' });
