@@ -95,6 +95,42 @@ app.post('/logout', async (req, res) => {
   }
 });
 
+app.post('/changepass', async (req, res) => {
+ const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).json({ message: 'Token tidak ditemukan' });
+
+  const { oldpassword, newpassword  } = req.body;
+
+
+  const token = authHeader.split(' ')[1];
+  const hashedPassword = await bcrypt.hash(oldpassword, 10);
+  const hashednewPassword = await bcrypt.hash(newpassword, 10);
+
+  const connection = await createConnection();
+    try {
+      
+      const [rows] = await connection.query('SELECT pwd FROM ais.mst_user WHERE token = ?', [token]);
+
+       // Bandingkan password lama
+        const match = oldPassword === rows.pwd;
+        if (!match) {
+            return res.status(401).json({ message: 'Password lama salah' });
+        }
+
+        // Lanjut update password di database:
+        await db.query("UPDATE ais.mst_user  SET pwd = ? WHERE token = ?", [hashednewPassword, token]);
+
+        return { success: true, message: 'Password berhasil diubah' };
+
+
+      // res.json({ message: 'User registered' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Registration failed' });
+  } finally {
+    await connection.end();
+  }
+});
 
 app.post('/register', async (req, res) => {
   const { username, password,name  } = req.body;
@@ -110,11 +146,11 @@ app.post('/register', async (req, res) => {
 
       const userId = result.insertId;
 
-      // Insert ke coa_user dengan id user
-      await connection.query(
-        'INSERT INTO ais.coa_user select m.coa_id,(?),m.coa_name as Alias,m.Balance,m.updated_at,m.last_dormant from ais.mst_coa m',
-        [userId]
-      );
+      // // Insert ke coa_user dengan id user
+      // await connection.query(
+      //   'INSERT INTO ais.coa_user select m.coa_id,(?),m.coa_name as Alias,m.Balance,m.updated_at,m.last_dormant from ais.mst_coa m',
+      //   [userId]
+      // );
 
       res.json({ message: 'User registered' });
   } catch (error) {
