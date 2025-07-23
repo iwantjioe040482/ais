@@ -108,9 +108,10 @@ app.post('/changepass', async (req, res) => {
 
   const connection = await createConnection();
     try {
-      console.log(token)
+      
       const [rows] = await connection.query('SELECT pwd FROM ais.mst_user WHERE token = ?', [token]);
-      console.log(rows)
+      console.log(JSON.stringify(rows));
+
        // Bandingkan password lama
         const match = oldpassword === rows[0].pwd;
         if (!match) {
@@ -126,7 +127,7 @@ app.post('/changepass', async (req, res) => {
       // res.json({ message: 'User registered' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Registration failed' });
+    res.status(500).json({ error: 'Change Password failed' });
   } finally {
     await connection.end();
   }
