@@ -103,17 +103,16 @@ app.post('/changepass', async (req, res) => {
 
 
   const token = authHeader.split(' ')[1];
-  const hashedPassword = await bcrypt.hash(oldpassword, 10);
   const hashednewPassword = await bcrypt.hash(newpassword, 10);
 
   const connection = await createConnection();
     try {
       
       const [rows] = await connection.query('SELECT pwd FROM ais.mst_user WHERE token = ?', [token]);
-      console.log(JSON.stringify(rows));
-      console.log(hashedPassword)
+
        // Bandingkan password lama
-        const match = hashedPassword === rows[0].pwd;
+        constmatch = await bcrypt.compare(oldpassword,  rows[0].pwd);
+        // const match = hashedPassword === rows[0].pwd;
         if (!match) {
             return res.status(401).json({ message: 'Password lama salah' });
         }
