@@ -110,7 +110,7 @@ app.post('/changepass', async (req, res) => {
     try {
       
       const [rows] = await connection.query('SELECT pwd FROM ais.mst_user WHERE token = ?', [token]);
-
+      console.log(rows[0])
        // Bandingkan password lama
         const match = oldpassword === rows[0];
         if (!match) {
