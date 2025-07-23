@@ -118,7 +118,7 @@ app.post('/changepass', async (req, res) => {
         }
 
         // Lanjut update password di database:
-        await db.query("UPDATE ais.mst_user  SET pwd = ? WHERE token = ?", [hashednewPassword, token]);
+        await connection.query("UPDATE ais.mst_user  SET pwd = ? WHERE token = ?", [hashednewPassword, token]);
 
         return { success: true, message: 'Password berhasil diubah' };
 
