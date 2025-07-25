@@ -505,9 +505,9 @@ app.post('/submitaccess', auth,async (req, res) => {
   let insertResults = [];
 
   // console.log(data);
-  data.forEach(item => {
-    console.log("Item:", item, "ID Coa:", item.id_coa);
-  });
+  // data.forEach(item => {
+  //   console.log("Item:", item, "ID Coa:", item.id_coa);
+  // });
 
   if (!Array.isArray(data)) {
     return res.status(400).json({ message: 'Data harus berupa array' });
