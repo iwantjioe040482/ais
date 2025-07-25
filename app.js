@@ -520,6 +520,7 @@ app.post('/submitaccess', auth,async (req, res) => {
     await connection.query('CALL sp_DeleteMenuAccess(?)', [token]);
 
     for (const item of data) {
+      console.log ("processing ",item.coa_id);
       const [results] = await connection.query('CALL sp_InsertMenuAccess(?, ?)', [token, item.coa_id]);
       insertResults.push(results);
     }
