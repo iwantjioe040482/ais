@@ -796,6 +796,8 @@ app.post('/transfer', auth,async (req, res) => {
       procedureName = 'IsiHanaFromCIMBLedger';
     } else if (from === 'CIMB' && to === 'Octo') {
       procedureName = 'IsiOctoFromCIMBLedger';
+    } else if (from === 'CIMB' && to === 'ShopeePay') {
+      procedureName = 'IsiShopeePayFromCIMBLedger';
     } else if (from === 'CIMB' && to === 'Ovo') {
       procedureName = 'IsiOctoFromCIMBLedger';
     } else if (from === 'Mandiri' && to === 'BCA') {
