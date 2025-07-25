@@ -517,6 +517,8 @@ app.post('/submitaccess', auth,async (req, res) => {
 
   try {
     const connection = await createConnection();
+    
+    await connection.query('CALL sp_DeleteMenuAccess(?)', [token]);
 
     const values = data.map(item => [token, item.id_coa]);
     
