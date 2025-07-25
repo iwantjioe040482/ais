@@ -514,14 +514,14 @@ app.post('/submitaccess', auth,async (req, res) => {
   try {
     const connection = await createConnection();
 
-    const values = data.map(item => [token, item.coa_id]);
+    const values = data.map(item => [token, item.id_coa]);
     console.log (values);
     
     await connection.query('CALL sp_DeleteMenuAccess(?)', [token]);
 
     for (const item of data) {
-      console.log ("processing ",item.coa_id);
-      const [results] = await connection.query('CALL sp_InsertMenuAccess(?, ?)', [token, item.coa_id]);
+      console.log ("processing ",item.id_coa);
+      const [results] = await connection.query('CALL sp_InsertMenuAccess(?, ?)', [token, item.id_coa]);
       insertResults.push(results);
     }
 
@@ -556,6 +556,8 @@ app.post('/access', auth,async (req, res) => {
     
 
     const [results] = await connection.query(sql,[token]);
+
+    console.log("List Access");
 
     console.log(JSON.stringify(results));
 
