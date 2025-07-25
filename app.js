@@ -496,6 +496,7 @@ app.get('/dailyexpense',auth , async (req, res) => {
   }
 });
 
+
 app.post('/submitaccess', auth,async (req, res) => {
   
   const authHeader = req.headers['authorization'];
@@ -518,12 +519,8 @@ app.post('/submitaccess', auth,async (req, res) => {
     const connection = await createConnection();
 
     const values = data.map(item => [token, item.id_coa]);
-    console.log (values);
     
-    await connection.query('CALL sp_DeleteMenuAccess(?)', [token]);
-
     for (const item of data) {
-      console.log ("processing ",item.id_coa);
       const [results] = await connection.query('CALL sp_InsertMenuAccess(?, ?)', [token, item.id_coa]);
       insertResults.push(results);
     }
