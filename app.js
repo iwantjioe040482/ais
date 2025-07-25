@@ -810,6 +810,8 @@ app.post('/transfer', auth,async (req, res) => {
     //console.log(`${procedureName} executed`, results);
     await connection.end();
 
+    console.log({ from, to, amount });
+
     res.status(200).json({
       message: 'Transfer recorded',
       data: { from, to, amount }
