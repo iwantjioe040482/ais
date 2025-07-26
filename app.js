@@ -1239,6 +1239,7 @@ app.get('/balance/:id',auth, async (req, res) => {
   // Peta nama ke coa_id
   const coaMap = {
     "Allo Bank": 32,
+    "Blu":62,
     "BCA": 2,
     "Cash": 1,
     "CIMB": 3,
@@ -1251,8 +1252,7 @@ app.get('/balance/:id',auth, async (req, res) => {
     "Octo": 24,
     "Ovo": 38,
     "Permata": 48,
-    "ShopeePay": 7,
-    "Blu":62
+    "ShopeePay": 7
   };
 
   const coaId = coaMap[id];
