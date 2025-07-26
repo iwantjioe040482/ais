@@ -1263,10 +1263,16 @@ app.get('/balance/:id',auth, async (req, res) => {
   }
 
   try {
-    const [results] = await connection.query(
-      'SELECT c.Balance,DATE_FORMAT(c.updated_at, "%Y-%m-%d") AS updated_at FROM mst_coa m INNER JOIN coa_user c ON c.id_coa=m.coa_id INNER JOIN mst_user u ON u.user_id=c.id_user WHERE u.token=? and  m.coa_id = ?',
+    
+     const [results] = await connection.query(
+      'CALL sp_Balance (?,?)',
       [token,coaId]
     );
+
+    //   const [results] = await connection.query(
+    //   'SELECT c.Balance,DATE_FORMAT(c.updated_at, "%Y-%m-%d") AS updated_at FROM mst_coa m INNER JOIN coa_user c ON c.id_coa=m.coa_id INNER JOIN mst_user u ON u.user_id=c.id_user WHERE u.token=? and  m.coa_id = ?',
+    //   [token,coaId]
+    // );
 
     console.log({ id, coaId, results });
 
