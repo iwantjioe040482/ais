@@ -1262,8 +1262,8 @@ app.get('/balance/:id',auth, async (req, res) => {
     return res.status(400).json({ error: `Invalid COA name: ${id}` });
   }
 
-  console.log(token)
-  console.log(coaId)
+  //console.log(token)
+  //console.log(coaId)
   
   try {
     
@@ -1283,7 +1283,7 @@ app.get('/balance/:id',auth, async (req, res) => {
       return res.status(404).json({ error: 'Balance not found' });
     }
 
-    res.json(results);
+    res.json(results[0]);
   } catch (err) {
     console.error('Query error:', err.message);
     res.status(500).json({ error: 'Failed to fetch balance' });
