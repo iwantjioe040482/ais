@@ -976,7 +976,7 @@ app.get('/priorityreport',auth, async (req, res) => {
 
     console.log('Credit card recurring results:', results);
 
-    res.json(results);
+    res.json(results[0]);
   } catch (err) {
     console.error('Error executing /priorityreport:', err.message);
     res.status(500).json({ error: 'Failed to fetch priority report data' });
