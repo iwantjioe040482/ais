@@ -1262,6 +1262,9 @@ app.get('/balance/:id',auth, async (req, res) => {
     return res.status(400).json({ error: `Invalid COA name: ${id}` });
   }
 
+  console.log(token)
+  console.log(coaId)
+  
   try {
     
      const [results] = await connection.query(
