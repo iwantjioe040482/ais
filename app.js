@@ -704,6 +704,7 @@ app.post('/incomes',  (req, res) => {
     "Dana": "IncomeDanaLedger",
     "GoPay": "IncomeGoPayLedger",
     "Hana": "IncomeHanaLedger",
+    "HSBC":"IncomeHSBCLedger"
     "Mandiri": "IncomeMandiriLedger",
     "Octo": "IncomeOctoLedger",
     "Ovo": "IncomeOvoLedger",
@@ -732,6 +733,7 @@ app.post('/expenses', (req, res) => {
     "Flazz": "InsertFlazzLedger",
     "GoPay": "InsertGoPayLedger",
     "Hana": "InsertHanaLedger",
+    "HSBC": "InsertHSBCLedger",
     "Mandiri": "InsertMandiriLedger",
     "Octo": "InsertOctoLedger",
     "Ovo": "InsertOvoLedger",
