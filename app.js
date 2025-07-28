@@ -710,7 +710,7 @@ app.post('/incomes',  (req, res) => {
     "Permata": "IncomePermataLedger"
   };
 
-  const { type } = req.body;
+  const { type, transaction } = req.body;
 
   const procedureName = typeMap[type];
   if (!procedureName) {
