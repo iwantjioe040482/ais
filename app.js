@@ -725,6 +725,7 @@ app.post('/expenses', (req, res) => {
   const typeMap = {
     "Allo Bank": "InsertAlloBankLedger",
     "BCA": "InsertBCALedger",
+    "Blu": "InsertBluLedger",
     "Cash": "InsertCashLedger",
     "CIMB": "InsertCIMBLedger",
     "Dana": "InsertDanaLedger",
@@ -734,7 +735,8 @@ app.post('/expenses', (req, res) => {
     "Mandiri": "InsertMandiriLedger",
     "Octo": "InsertOctoLedger",
     "Ovo": "InsertOvoLedger",
-    "Permata": "InsertPermataLedger"
+    "Permata": "InsertPermataLedger",
+    "ShopeePay": "InsertShopeePayLedger"
   };
 
   console.log(req.body);
