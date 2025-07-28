@@ -669,6 +669,56 @@ async function handleLedgerCall(req, res, procedureName, hasPriority) {
   }
 }
 
+app.post('/incomes', async (req, res) => {
+  const typeMap = {
+    "Allo Bank": "IncomeAlloBankLedger",
+    "BCA": "IncomeBCALedger",
+    "Cash": "IncomeCashLedger",
+    "CIMB": "IncomeCIMBLedger",
+    "Dana": "IncomeDanaLedger",
+    "GoPay": "IncomeGoPayLedger",
+    "Hana": "IncomeHanaLedger",
+    "Mandiri": "IncomeMandiriLedger",
+    "Octo": "IncomeOctoLedger",
+    "Ovo": "IncomeOvoLedger",
+    "Permata": "IncomePermataLedger"
+  };
+
+  const { type } = req.body;
+
+  const procedureName = typeMap[type];
+  if (!procedureName) {
+    return res.status(400).json({ error: `Unknown type: ${type}` });
+  }
+
+  await handleLedgerCall(req, res, procedureName, false); // false = without priority
+});
+
+app.post('/expenses', async (req, res) => {
+  const typeMap = {
+    "Allo Bank": "InsertAlloBankLedger",
+    "BCA": "InsertBCALedger",
+    "Cash": "InsertCashLedger",
+    "CIMB": "InsertCIMBLedger",
+    "Dana": "InsertDanaLedger",
+    "GoPay": "InsertGoPayLedger",
+    "Hana": "InsertHanaLedger",
+    "Mandiri": "InsertMandiriLedger",
+    "Octo": "InsertOctoLedger",
+    "Ovo": "InsertOvoLedger",
+    "Permata": "InsertPermataLedger"
+  };
+
+  const { type } = req.body;
+
+  const procedureName = typeMap[type];
+  if (!procedureName) {
+    return res.status(400).json({ error: `Unknown type: ${type}` });
+  }
+
+  await handleLedgerCall(req, res, procedureName, false); // false = without priority
+});
+
 app.post('/allobankincome', (req, res) =>
   handleLedgerCall(req, res, 'IncomeAlloBankLedger', false)
 );
