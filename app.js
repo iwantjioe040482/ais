@@ -1381,6 +1381,7 @@ app.get('/balance/:id',auth, async (req, res) => {
     "Allo Bank": 32,
     "Blu":62,
     "BCA": 2,
+    "BTN": 64,
     "Cash": 1,
     "CIMB": 3,
     "Dana": 25,
