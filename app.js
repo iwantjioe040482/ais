@@ -788,6 +788,8 @@ app.post('/transfer', auth,async (req, res) => {
       procedureName = 'IsiBCAFromCIMBLedger';
     } else if (from === 'CIMB' && to === 'Cash') {
       procedureName = 'IsiCashFromCIMBLedger';
+    } else if (from === 'CIMB' && to === 'HSBC') {
+      procedureName = 'IsiHSBCFromCIMBLedger';
     } else if (from === 'BCA' && to === 'Flazz') {
       procedureName = 'IsiFlazzFromBCALedger';
     } else if (from === 'CIMB' && to === 'GoPay') {
@@ -800,6 +802,8 @@ app.post('/transfer', auth,async (req, res) => {
       procedureName = 'IsiShopeePayFromCIMBLedger';
     } else if (from === 'CIMB' && to === 'Ovo') {
       procedureName = 'IsiOctoFromCIMBLedger';
+    } else if (from === 'HSBC' && to === 'BCA') {
+      procedureName = 'IsiBCAFromHSBCLedger';
     } else if (from === 'Mandiri' && to === 'BCA') {
       procedureName = 'IsiBCAFromMandiriLedger';
     } else {
