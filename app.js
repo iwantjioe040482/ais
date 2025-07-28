@@ -716,7 +716,7 @@ app.post('/expenses', async (req, res) => {
     return res.status(400).json({ error: `Unknown type: ${type}` });
   }
 
-  await handleLedgerCall(req, res, procedureName, false); // false = without priority
+  handleLedgerCall(req, res, procedureName, false); // false = without priority
 });
 
 app.post('/allobankincome', (req, res) =>
