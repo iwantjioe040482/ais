@@ -728,6 +728,7 @@ app.post('/expenses', (req, res) => {
     "Cash": "InsertCashLedger",
     "CIMB": "InsertCIMBLedger",
     "Dana": "InsertDanaLedger",
+    "Flazz": "InsertFlazzLedger",
     "GoPay": "InsertGoPayLedger",
     "Hana": "InsertHanaLedger",
     "Mandiri": "InsertMandiriLedger",
