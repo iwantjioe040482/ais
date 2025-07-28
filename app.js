@@ -748,7 +748,7 @@ app.post('/expenses', (req, res) => {
     return res.status(400).json({ error: `Unknown type: ${type}` });
   }
 
-  handleLedgerCallv2(req, res, procedureName, false); // false = without priority
+  handleLedgerCallv2(req, res, procedureName, true); // false = without priority
 });
 
 app.post('/allobankincome', (req, res) =>
