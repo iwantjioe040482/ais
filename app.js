@@ -643,6 +643,32 @@ app.get('/priority', async (req, res) => {
 });
 
 
+async function handleLedgerCallv2(req, res, procedureName, hasPriority) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+  
+  try {
+    const part = typeof req.body.transaction === 'string' ? JSON.parse(req.body.transaction) : req.body.transaction;
+    const connection = await createConnection();
+
+    const values = hasPriority
+      ? [token,part.coa_id, part.description, part.total, part.priority_id]
+      : [token,part.coa_id, part.description, part.total];
+
+    const sql = `CALL ${procedureName} (${values.map(() => '?').join(', ')})`;
+
+    const [results] = await connection.query(sql, values);
+
+    console.log(`${procedureName} executed`, results);
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error(`Error executing ${procedureName}:`, err.message);
+    res.status(500).json({ error: `Failed to execute ${procedureName}` });
+  }
+}
+
 async function handleLedgerCall(req, res, procedureName, hasPriority) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
@@ -691,10 +717,11 @@ app.post('/incomes',  (req, res) => {
     return res.status(400).json({ error: `Unknown type: ${type}` });
   }
 
-   handleLedgerCall(req, res, procedureName, false); // false = without priority
+   handleLedgerCallv2(req, res, procedureName, false); // false = without priority
 });
 
 app.post('/expenses', (req, res) => {
+  
   const typeMap = {
     "Allo Bank": "InsertAlloBankLedger",
     "BCA": "InsertBCALedger",
@@ -709,15 +736,16 @@ app.post('/expenses', (req, res) => {
     "Permata": "InsertPermataLedger"
   };
 
-  const { type } = req.body;
+  const { type, transaction } = req.body;
 
   const procedureName = typeMap[type];
+  
   console.log (procedureName);
   if (!procedureName) {
     return res.status(400).json({ error: `Unknown type: ${type}` });
   }
 
-  handleLedgerCall(req, res, procedureName, false); // false = without priority
+  handleLedgerCallv2(req, res, procedureName, false); // false = without priority
 });
 
 app.post('/allobankincome', (req, res) =>
