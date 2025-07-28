@@ -736,8 +736,9 @@ app.post('/expenses', (req, res) => {
     "Permata": "InsertPermataLedger"
   };
 
+  console.log(req.body);
   const { type, transaction } = req.body;
-  
+
   console.log (type);
 
   const procedureName = typeMap[type];
