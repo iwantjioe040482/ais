@@ -737,9 +737,11 @@ app.post('/expenses', (req, res) => {
   };
 
   const { type, transaction } = req.body;
+  
+  console.log (type);
 
   const procedureName = typeMap[type];
-  
+
   console.log (procedureName);
   if (!procedureName) {
     return res.status(400).json({ error: `Unknown type: ${type}` });
