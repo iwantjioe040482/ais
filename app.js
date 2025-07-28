@@ -669,7 +669,7 @@ async function handleLedgerCall(req, res, procedureName, hasPriority) {
   }
 }
 
-app.post('/incomes', async (req, res) => {
+app.post('/incomes',  (req, res) => {
   const typeMap = {
     "Allo Bank": "IncomeAlloBankLedger",
     "BCA": "IncomeBCALedger",
@@ -691,10 +691,10 @@ app.post('/incomes', async (req, res) => {
     return res.status(400).json({ error: `Unknown type: ${type}` });
   }
 
-  await handleLedgerCall(req, res, procedureName, false); // false = without priority
+   handleLedgerCall(req, res, procedureName, false); // false = without priority
 });
 
-app.post('/expenses', async (req, res) => {
+app.post('/expenses', (req, res) => {
   const typeMap = {
     "Allo Bank": "InsertAlloBankLedger",
     "BCA": "InsertBCALedger",
