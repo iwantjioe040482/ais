@@ -746,7 +746,7 @@ app.post('/incomes',  (req, res) => {
   // const { type, transaction } = req.body;
 
   // const procedureName = typeMap[type];
-  const procedureName ="InserttypeLedger"
+  const procedureName ="IncometypeLedger"
 
   if (!procedureName) {
     return res.status(400).json({ error: `Unknown type: ${type}` });
