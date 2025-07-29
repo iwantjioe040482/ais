@@ -642,6 +642,34 @@ app.get('/priority', async (req, res) => {
   }
 });
 
+async function handleLedgerCallv3(req, res, procedureName, hasPriority) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+  
+  try {
+    
+    console.log(req.body.type);
+    const stype =typeof req.body.type === 'string' ? JSON.parse(req.body.type) : req.body.type;  
+    const part = typeof req.body.transaction === 'string' ? JSON.parse(req.body.transaction) : req.body.transaction;
+    const connection = await createConnection();
+
+    const values = hasPriority
+      ? [stype,token,part.coa_id, part.description, part.total, part.priority_id]
+      : [stype,token,part.coa_id, part.description, part.total];
+
+    const sql = `CALL ${procedureName} (${values.map(() => '?').join(', ')})`;
+
+    const [results] = await connection.query(sql, values);
+
+    console.log(`${procedureName} executed`, results);
+    await connection.end();
+
+    res.status(201).json(part);
+  } catch (err) {
+    console.error(`Error executing ${procedureName}:`, err.message);
+    res.status(500).json({ error: `Failed to execute ${procedureName}` });
+  }
+}
 
 async function handleLedgerCallv2(req, res, procedureName, hasPriority) {
   const authHeader = req.headers['authorization'];
@@ -749,14 +777,14 @@ app.post('/expenses', (req, res) => {
 
   console.log (type);
 
-  const procedureName = typeMap[type];
-
+  //const procedureName = typeMap[type];
+  const procedureName ="InserttypeLedger"
   console.log (procedureName);
   if (!procedureName) {
     return res.status(400).json({ error: `Unknown type: ${type}` });
   }
 
-  handleLedgerCallv2(req, res, procedureName, true); // false = without priority
+  handleLedgerCallv3(req, res, procedureName, true); // false = without priority
 });
 
 app.post('/allobankincome', (req, res) =>
