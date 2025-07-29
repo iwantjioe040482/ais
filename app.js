@@ -727,55 +727,59 @@ async function handleLedgerCall(req, res, procedureName, hasPriority) {
 }
 
 app.post('/incomes',  (req, res) => {
-  const typeMap = {
-    "Allo Bank": "IncomeAlloBankLedger",
-    "BCA": "IncomeBCALedger",
-    "Cash": "IncomeCashLedger",
-    "CIMB": "IncomeCIMBLedger",
-    "Dana": "IncomeDanaLedger",
-    "GoPay": "IncomeGoPayLedger",
-    "Hana": "IncomeHanaLedger",
-    "HSBC":"IncomeHSBCLedger",
-    "Mandiri": "IncomeMandiriLedger",
-    "Octo": "IncomeOctoLedger",
-    "Ovo": "IncomeOvoLedger",
-    "Permata": "IncomePermataLedger"
-  };
+  //v2
+  // const typeMap = {
+  //   "Allo Bank": "IncomeAlloBankLedger",
+  //   "BCA": "IncomeBCALedger",
+  //   "Cash": "IncomeCashLedger",
+  //   "CIMB": "IncomeCIMBLedger",
+  //   "Dana": "IncomeDanaLedger",
+  //   "GoPay": "IncomeGoPayLedger",
+  //   "Hana": "IncomeHanaLedger",
+  //   "HSBC":"IncomeHSBCLedger",
+  //   "Mandiri": "IncomeMandiriLedger",
+  //   "Octo": "IncomeOctoLedger",
+  //   "Ovo": "IncomeOvoLedger",
+  //   "Permata": "IncomePermataLedger"
+  // };
 
-  const { type, transaction } = req.body;
+  // const { type, transaction } = req.body;
 
-  const procedureName = typeMap[type];
+  // const procedureName = typeMap[type];
+  const procedureName ="InserttypeLedger"
+
   if (!procedureName) {
     return res.status(400).json({ error: `Unknown type: ${type}` });
   }
 
-   handleLedgerCallv2(req, res, procedureName, false); // false = without priority
+   handleLedgerCallv3(req, res, procedureName, false); // false = without priority
 });
 
 app.post('/expenses', (req, res) => {
-  
-  const typeMap = {
-    "Allo Bank": "InsertAlloBankLedger",
-    "BCA": "InsertBCALedger",
-    "Blu": "InsertBluLedger",
-    "Cash": "InsertCashLedger",
-    "CIMB": "InsertCIMBLedger",
-    "Dana": "InsertDanaLedger",
-    "Flazz": "InsertFlazzLedger",
-    "GoPay": "InsertGoPayLedger",
-    "Hana": "InsertHanaLedger",
-    "HSBC": "InsertHSBCLedger",
-    "Mandiri": "InsertMandiriLedger",
-    "Octo": "InsertOctoLedger",
-    "Ovo": "InsertOvoLedger",
-    "Permata": "InsertPermataLedger",
-    "ShopeePay": "InsertShopeePayLedger"
-  };
+ 
+  //v2 
+  // const typeMap = {
+  //   "Allo Bank": "InsertAlloBankLedger",
+  //   "BCA": "InsertBCALedger",
+  //   "Blu": "InsertBluLedger",
+  //   "Cash": "InsertCashLedger",
+  //   "CIMB": "InsertCIMBLedger",
+  //   "Dana": "InsertDanaLedger",
+  //   "Flazz": "InsertFlazzLedger",
+  //   "GoPay": "InsertGoPayLedger",
+  //   "Hana": "InsertHanaLedger",
+  //   "HSBC": "InsertHSBCLedger",
+  //   "Mandiri": "InsertMandiriLedger",
+  //   "Octo": "InsertOctoLedger",
+  //   "Ovo": "InsertOvoLedger",
+  //   "Permata": "InsertPermataLedger",
+  //   "ShopeePay": "InsertShopeePayLedger"
+  // };
 
-  console.log(req.body);
-  const { type, transaction } = req.body;
+  // console.log(req.body);
+  // const { type, transaction } = req.body;
 
-  console.log (type);
+  // console.log (type);
 
   //const procedureName = typeMap[type];
   const procedureName ="InserttypeLedger"
