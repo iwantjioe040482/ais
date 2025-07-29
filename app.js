@@ -869,37 +869,41 @@ app.post('/transfer', auth,async (req, res) => {
         // Tentukan prosedur berdasarkan kombinasi from-to
     let procedureName = null;
 
-    if (from === 'BCA' && to === 'Cash') {
-      procedureName = 'IsiCashFromBCALedger';
-    } else if (from === 'CIMB' && to === 'BCA') {
-      procedureName = 'IsiBCAFromCIMBLedger';
-    } else if (from === 'CIMB' && to === 'Cash') {
-      procedureName = 'IsiCashFromCIMBLedger';
-    } else if (from === 'CIMB' && to === 'HSBC') {
-      procedureName = 'IsiHSBCFromCIMBLedger';
-    } else if (from === 'BCA' && to === 'Flazz') {
-      procedureName = 'IsiFlazzFromBCALedger';
-    } else if (from === 'CIMB' && to === 'GoPay') {
-      procedureName = 'IsiGopayFromCIMBLedger';
-    } else if (from === 'CIMB' && to === 'Hana') {
-      procedureName = 'IsiHanaFromCIMBLedger';
-    } else if (from === 'CIMB' && to === 'Octo') {
-      procedureName = 'IsiOctoFromCIMBLedger';
-    } else if (from === 'CIMB' && to === 'ShopeePay') {
-      procedureName = 'IsiShopeePayFromCIMBLedger';
-    } else if (from === 'CIMB' && to === 'Ovo') {
-      procedureName = 'IsiOctoFromCIMBLedger';
-    } else if (from === 'HSBC' && to === 'BCA') {
-      procedureName = 'IsiBCAFromHSBCLedger';
-    } else if (from === 'Mandiri' && to === 'BCA') {
-      procedureName = 'IsiBCAFromMandiriLedger';
-    } else {
-      return res.status(400).json({ error: 'Unsupported from-to combination' });
-    }
+    procedureName ="IsiFromToLedger"
+
+    // if (from === 'BCA' && to === 'Cash') {
+    //   procedureName = 'IsiCashFromBCALedger';
+    // } else if (from === 'BCA' && to === 'Flazz') {
+    //   procedureName = 'IsiFlazzFromBCALedger';
+    // } else if (from === 'CIMB' && to === 'BCA') {
+    //   procedureName = 'IsiBCAFromCIMBLedger';
+    // } else if (from === 'CIMB' && to === 'Cash') {
+    //   procedureName = 'IsiCashFromCIMBLedger';
+    // } else if (from === 'CIMB' && to === 'GoPay') {
+    //   procedureName = 'IsiGopayFromCIMBLedger';
+    // } else if (from === 'CIMB' && to === 'Hana') {
+    //   procedureName = 'IsiHanaFromCIMBLedger';
+    // } else if (from === 'CIMB' && to === 'HSBC') {
+    //   procedureName = 'IsiHSBCFromCIMBLedger';
+    // } else if (from === 'CIMB' && to === 'Octo') {
+    //   procedureName = 'IsiOctoFromCIMBLedger';
+    // } else if (from === 'CIMB' && to === 'Ovo') {
+    //   procedureName = 'IsiOctoFromCIMBLedger';
+    // } else if (from === 'CIMB' && to === 'ShopeePay') {
+    //   procedureName = 'IsiShopeePayFromCIMBLedger';
+    // } else if (from === 'Hana' && to === 'BCA') {
+    //   procedureName = 'IsiBCAFromHanaLedger';
+    // } else if (from === 'HSBC' && to === 'BCA') {
+    //   procedureName = 'IsiBCAFromHSBCLedger';
+    // } else if (from === 'Mandiri' && to === 'BCA') {
+    //   procedureName = 'IsiBCAFromMandiriLedger';
+    // } else {
+    //   return res.status(400).json({ error: 'Unsupported from-to combination' });
+    // }
 
     const description = `Transfer from ${from} to ${to}`;
-    const values = [token,description, amount];
-    const sql = `CALL ${procedureName}(?,?, ?)`;
+    const values = [from,to,token,description, amount];
+    const sql = `CALL ${procedureName}(?,?,?,?, ?)`;
 
     const connection = await createConnection();
     
