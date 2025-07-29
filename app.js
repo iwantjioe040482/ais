@@ -648,6 +648,9 @@ async function handleLedgerCallv2(req, res, procedureName, hasPriority) {
   const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
   
   try {
+    
+    console.log(req.body.type);
+
     const part = typeof req.body.transaction === 'string' ? JSON.parse(req.body.transaction) : req.body.transaction;
     const connection = await createConnection();
 
@@ -871,6 +874,7 @@ app.post('/transfer', auth,async (req, res) => {
 
     procedureName ="IsiFromToLedger"
 
+    //v1 bingung dan manual satu per satu SP dibuat
     // if (from === 'BCA' && to === 'Cash') {
     //   procedureName = 'IsiCashFromBCALedger';
     // } else if (from === 'BCA' && to === 'Flazz') {
