@@ -649,7 +649,7 @@ async function handleLedgerCallv3(req, res, procedureName, hasPriority) {
   try {
     
     console.log(req.body.type);
-    const stype =typeof req.body.type === 'string' ? JSON.parse(req.body.type) : req.body.type;  
+    const stype = req.body.type;
     const part = typeof req.body.transaction === 'string' ? JSON.parse(req.body.transaction) : req.body.transaction;
     const connection = await createConnection();
 
