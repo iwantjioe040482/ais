@@ -117,7 +117,7 @@ app.post('/changepass', async (req, res) => {
         const match = await bcrypt.compare(oldpassword,  rows[0].pwd); 
         // const match = hashedPassword === rows[0].pwd;
         if (!match) {
-            return res.status(401).json({ message: 'Password lama salah' });
+            return res.status(400).json({ message: 'Password lama salah' });
         }
 
         // Lanjut update password di database:
