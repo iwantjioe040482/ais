@@ -1015,6 +1015,28 @@ app.get('/monthlyexpense', auth ,async (req, res) => {
   }
 });
 
+app.get('/monthlyincomes', auth ,async (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+  try {
+    const connection = await createConnection();
+    // const [rows] = await connection.execute(`
+    //   SELECT * FROM vw_MonthlyExpenses
+    // `);
+    const [rows] = await connection.execute(`
+      CALL sp_MonthlyIncomes (?)
+    `,[token]);
+    
+    
+    await connection.end();
+
+    res.json(rows[0]);
+  } catch (error) {
+    console.error('Error in /pivot:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 app.get('/pivot',auth, async (req, res) => {
   
   const authHeader = req.headers['authorization'];
