@@ -1151,7 +1151,7 @@ app.get('/priorityreport',auth, async (req, res) => {
 
     const [results] = await connection.query(sql,[token]);
 
-    console.log('Credit card recurring results:', results);
+    console.log('Report Priority results:', results);
 
     res.json(results[0]);
   } catch (err) {
@@ -1197,6 +1197,31 @@ app.get('/creditcard',auth, async (req, res) => {
     if (connection) await connection.end();
   }
 });
+
+app.get('/maintenance', auth,async (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
+  let connection;
+
+  try {
+    connection = await createConnection();
+
+    const sql = `CALL sp_maintenance(?)`;
+
+    const [results] = await connection.query(sql,[token]);
+
+    console.log('Insurance recurring results:', results);
+
+    res.json(results);
+  } catch (err) {
+    console.error('Error executing /insurance:', err.message);
+    res.status(500).json({ error: 'Failed to fetch insurance recurring data' });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+
 app.get('/insurance', auth,async (req, res) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
