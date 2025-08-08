@@ -1531,7 +1531,7 @@ app.get('/balance/:id',auth, async (req, res) => {
     //   [token,coaId]
     // );
 
-    console.log({ id, coaId, results });
+    console.log({ id, results });
 
     if (results.length === 0) {
       return res.status(404).json({ error: 'Balance not found' });
