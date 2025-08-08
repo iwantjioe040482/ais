@@ -1489,32 +1489,32 @@ app.get('/balance/:id',auth, async (req, res) => {
   const connection = await createConnection(dbConfig);
   const id = req.params.id;
 
-  // Peta nama ke coa_id
-  const coaMap = {
-    "Allo Bank": 32,
-    "Blu":62,
-    "BCA": 2,
-    "BTN": 64,
-    "Cash": 1,
-    "CIMB": 3,
-    "Dana": 25,
-    "Flazz": 10,
-    "GoPay": 5,
-    "Hana": 57,
-    "HSBC":58,
-    "Mandiri":61,
-    "Octo": 24,
-    "Ovo": 38,
-    "Permata": 48,
-    "ShopeePay": 7
-  };
+  // // Peta nama ke coa_id
+  // const coaMap = {
+  //   "Allo Bank": 32,
+  //   "Blu":62,
+  //   "BCA": 2,
+  //   "BTN": 64,
+  //   "Cash": 1,
+  //   "CIMB": 3,
+  //   "Dana": 25,
+  //   "Flazz": 10,
+  //   "GoPay": 5,
+  //   "Hana": 57,
+  //   "HSBC":58,
+  //   "Mandiri":61,
+  //   "Octo": 24,
+  //   "Ovo": 38,
+  //   "Permata": 48,
+  //   "ShopeePay": 7
+  // };
 
-  const coaId = coaMap[id];
+  // const coaId = coaMap[id];
 
-  if (!coaId) {
-    await connection.end();
-    return res.status(400).json({ error: `Invalid COA name: ${id}` });
-  }
+  // if (!coaId) {
+  //   await connection.end();
+  //   return res.status(400).json({ error: `Invalid COA name: ${id}` });
+  // }
 
   //console.log(token)
   //console.log(coaId)
@@ -1523,7 +1523,7 @@ app.get('/balance/:id',auth, async (req, res) => {
     
      const [results] = await connection.query(
       'CALL sp_Balance (?,?)',
-      [token,coaId]
+      [token,id]
     );
 
     //   const [results] = await connection.query(
