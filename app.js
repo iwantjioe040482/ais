@@ -1336,7 +1336,7 @@ app.get('/water',auth, async (req, res) => {
 });
 
 
-app.post('/location',auth, async (req, res) => {
+app.post('/locations',auth, async (req, res) => {
   
   console.log("masuk location");
   const authHeader = req.headers['authorization'];
