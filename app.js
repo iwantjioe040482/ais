@@ -1351,15 +1351,16 @@ app.post('/locations',auth, async (req, res) => {
   let connection;  
     
   try {
-    // const electricity = typeof req.body === 'string'
-    //   ? JSON.parse(req.body)
-    //   : req.body;
+    const electricity = typeof req.body === 'string'
+      ? JSON.parse(req.body)
+      : req.body;
 
     connection = await createConnection();
 
     const sql = 'CALL sp_insertlocation(?,?,?)';
     console.log(sql);
-    const values = [token, lat, lon];
+
+    const values = [token, electricity.lat, electricity.lon];
 
     const [results] = await connection.query(sql, values);
 
