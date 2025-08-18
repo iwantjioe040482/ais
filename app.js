@@ -1338,7 +1338,7 @@ app.get('/water',auth, async (req, res) => {
 
 app.post('/location',auth, async (req, res) => {
   
-  console.log("masuk location");_
+  console.log("masuk location");
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
 
