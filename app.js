@@ -1358,6 +1358,7 @@ app.post('/locations',auth, async (req, res) => {
     connection = await createConnection();
 
     const sql = 'CALL sp_insertlocation(?,?,?)';
+    console.log(sql);
     const values = [token, lat, lon];
 
     const [results] = await connection.query(sql, values);
