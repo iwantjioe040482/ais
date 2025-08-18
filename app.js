@@ -1364,7 +1364,7 @@ app.post('/locations',auth, async (req, res) => {
     const [results] = await connection.query(sql, values);
 
     console.log(`Inserted Rows: ${results.affectedRows}`);
-    res.status(201).json(electricity);
+    res.status(201).json(results);
   } catch (err) {
     console.error('Error inserting location data:', err.message);
     res.status(500).json({ error: 'Failed to insert location data' });
