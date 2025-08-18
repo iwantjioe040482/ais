@@ -1037,6 +1037,37 @@ app.get('/monthlyincomes', auth ,async (req, res) => {
   }
 });
 
+
+app.get('/incomepivot',auth, async (req, res) => {
+  
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
+    console.log('auth:', authHeader,token);
+
+     try {
+    const connection = await createConnection();
+    // const [rows] = await connection.execute(`
+    //   SELECT * FROM vw_MonthlyExpenses
+    // `);
+    const [rows] = await connection.execute(`
+      CALL sp_MonthlyIncomes(?)
+    `,[token]);
+
+
+    await connection.end();
+
+
+    const pivot = transformToPivot(rows[0]);
+    console.log('pivot result:',pivot );
+ 
+    res.json(pivot);
+  } catch (error) {
+    console.error('Error in /incomepivot:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 app.get('/pivot',auth, async (req, res) => {
   
   const authHeader = req.headers['authorization'];
@@ -1365,7 +1396,7 @@ app.post('/locations',auth, async (req, res) => {
     const [results] = await connection.query(sql, values);
 
     console.log(`Inserted Rows: ${results.affectedRows}`);
-    res.status(201).json(results);
+    res.status(201).json(electricity);
   } catch (err) {
     console.error('Error inserting location data:', err.message);
     res.status(500).json({ error: 'Failed to insert location data' });
