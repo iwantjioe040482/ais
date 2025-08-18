@@ -1335,6 +1335,42 @@ app.get('/water',auth, async (req, res) => {
   }
 });
 
+
+app.get('/location',auth, async (req, res) => {
+  
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
+  const { lat, lon } = req.query;
+
+  if (!lat || !lon) {
+    return res.status(400).json({ error: "lat & lon wajib diisi" });
+  }
+
+  let connection;  
+    
+  try {
+    // const electricity = typeof req.body === 'string'
+    //   ? JSON.parse(req.body)
+    //   : req.body;
+
+    connection = await createConnection();
+
+    const sql = 'CALL sp_insertlocation(?,?,?)';
+    const values = [token, lat, lon];
+
+    const [results] = await connection.query(sql, values);
+
+    console.log(`Inserted Rows: ${results.affectedRows}`);
+    res.status(201).json(electricity);
+  } catch (err) {
+    console.error('Error inserting location data:', err.message);
+    res.status(500).json({ error: 'Failed to insert location data' });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+
 app.post('/electricity',auth, async (req, res) => {
   
   const authHeader = req.headers['authorization'];
