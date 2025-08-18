@@ -1342,11 +1342,11 @@ app.post('/locations',auth, async (req, res) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
 
-  const { lat, lon } = req.query;
+  // const { lat, lon } = req.query;
 
-  if (!lat || !lon) {
-    return res.status(400).json({ error: "lat & lon wajib diisi" });
-  }
+  // if (!lat || !lon) {
+  //   return res.status(400).json({ error: "lat & lon wajib diisi" });
+  // }
 
   let connection;  
     
