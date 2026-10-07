@@ -598,6 +598,33 @@ app.get('/income', auth,async (req, res) => {
 });
 
 
+
+app.get('/expensebycoa/:id', auth,async (req, res) => {
+  
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
+  try {
+    const connection = await createConnection();
+    const id = req.params.id;
+
+    //const sql = 'SELECT * FROM vw_DailyExpenses';
+    const sql = 'CALL sp_TransactiongetExpenseByCOA(?,?)';
+    
+
+    const [results] = await connection.query(sql,[token,id]);
+
+    console.log(JSON.stringify(results));
+
+    await connection.end();
+
+    res.json(results[0]);
+  } catch (err) {
+    console.error('Database error:', err.message);
+    res.status(500).json({ error: 'Failed to retrieve expense data' });
+  }
+});
+
 app.get('/expense', auth,async (req, res) => {
   
   const authHeader = req.headers['authorization'];
