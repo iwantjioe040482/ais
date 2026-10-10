@@ -1153,6 +1153,30 @@ app.get('/cashflow',auth, async (req, res) => {
   }
 });
 
+app.get('/coaall',auth, async (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
+  let connection;
+  try {
+    connection = await createConnection();
+
+    // const [results] = await connection.query('SELECT * FROM vw_CoaExpenses');
+    const [results] = await connection.query('CALL sp_CoaAll(?)',[token]);
+    
+
+    console.log('vw_CoaExpenses results:', results);
+
+    res.json(results[0]);
+  } catch (err) {
+    console.error('Error fetching vw_CoaTrans:', err.message);
+    res.status(500).json({ error: 'Failed to fetch data from vw_CoaTrans' });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+
+
 app.get('/coaincome',auth, async (req, res) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
