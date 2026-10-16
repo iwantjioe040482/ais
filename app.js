@@ -1361,6 +1361,30 @@ app.get('/groupmonthlyexpense', auth,async (req, res) => {
   }
 });
 
+app.get('/groupmonthlyincome', auth,async (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
+  let connection;
+
+  try {
+    connection = await createConnection();
+
+    const sql = `CALL sp_monthly_group_income(?)`;
+
+    const [results] = await connection.query(sql,[token]);
+
+    console.log('Insurance recurring results:', results);
+
+    res.json(results[0]);
+  } catch (err) {
+    console.error('Error executing /groupmonthlyexpense:', err.message);
+    res.status(500).json({ error: 'Failed to fetch group monthly expense data' });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+
 app.get('/maintenance', auth,async (req, res) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
