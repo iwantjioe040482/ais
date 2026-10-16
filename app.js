@@ -1064,6 +1064,35 @@ app.get('/monthlyincomes', auth ,async (req, res) => {
   }
 });
 
+app.get('/groupexpensemonthlypivot',auth, async (req, res) => {
+  
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
+    console.log('auth:', authHeader,token);
+
+     try {
+    const connection = await createConnection();
+    // const [rows] = await connection.execute(`
+    //   SELECT * FROM vw_MonthlyExpenses
+    // `);
+    const [rows] = await connection.execute(`
+      CALL sp_monthly_group_expense(?)
+    `,[token]);
+
+
+    await connection.end();
+
+
+    const pivot = transformToPivot(rows[0]);
+    console.log('pivot result:',pivot );
+ 
+    res.json(pivot);
+  } catch (error) {
+    console.error('Error in /pivot:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 app.get('/incomepivot',auth, async (req, res) => {
   
