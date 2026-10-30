@@ -121,13 +121,13 @@ async function getMonthlyTrend() {
             FROM tr_ledger l
 
             INNER JOIN mst_coa c
-                ON c.id = l.coa_id
+                ON c.coa_id = l.coa_id
 
             WHERE l.gl_date >= :fromDate
               AND l.gl_date < :toDate
 
             GROUP BY
-                c.id,
+                c.coa_id,
                 c.coa_code,
                 c.coa_name
 
