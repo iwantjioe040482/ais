@@ -26,6 +26,10 @@ const createConnection = async () => {
   return await mysql.createConnection(dbConfig);
 };
 
+const sequelize = require('../config/Db');
+const { QueryTypes } = require('sequelize');
+
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
@@ -43,19 +47,6 @@ const auth = (req, res, next) => {
     });
 };
 
-const { QueryTypes } = require('sequelize');
-const sequelize = new QueryTypes(
-    'ais',
-    'dbuser',
-    'Welcome123',
-    {
-        host: 'localhost',
-        dialect: 'mariadb',
-        logging: false
-    }
-);
-
-module.exports = sequelize;
 
 async function getMonthlyTrend() {
     try {
