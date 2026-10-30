@@ -1228,6 +1228,30 @@ app.get('/coaall',auth, async (req, res) => {
 });
 
 
+app.get('/cash',auth, async (req, res) => {
+  
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
+
+    console.log('auth:', authHeader,token);
+
+     try {
+    const connection = await createConnection();
+
+    const [rows] = await connection.execute(`
+      CALL sp_MonthlyCashflow(?)
+    `,[token]);
+
+    res.json(rows[0]);
+
+    await connection.end();
+
+  } catch (error) {
+    console.error('Error in /cashflow:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 app.get('/coaincome',auth, async (req, res) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // ambil token dari header
