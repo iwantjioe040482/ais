@@ -26,7 +26,7 @@ const createConnection = async () => {
   return await mysql.createConnection(dbConfig);
 };
 
-const sequelize = require('../config/Db');
+const sequelize = require('./config/Db');
 const { QueryTypes } = require('sequelize');
 
 
