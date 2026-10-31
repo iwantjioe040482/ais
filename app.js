@@ -51,7 +51,7 @@ const auth = (req, res, next) => {
 async function getMonthlyTrend() {
     try {
 
-        const totalMonths = 4;
+        const totalMonths = 10;
 
         // Bulan sekarang
         const currentDate = new Date();
