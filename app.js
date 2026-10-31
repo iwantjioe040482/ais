@@ -124,7 +124,7 @@ async function getMonthlyTrend() {
                 ON c.coa_id = l.coa_id
 
             WHERE l.gl_date >= :fromDate
-              AND l.gl_date < :toDate
+              AND l.gl_date < :toDate and c.coa_code like '500%'
 
             GROUP BY
                 c.coa_id,
