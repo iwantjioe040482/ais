@@ -47,6 +47,129 @@ const auth = (req, res, next) => {
     });
 };
 
+async function getMonthlyIncTrend() {
+    try {
+
+
+        // Bulan sekarang
+        const currentDate = new Date();
+
+        const totalMonths = currentDate.getMonth()+1;
+
+        // Awal periode
+        const startDate = new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth() - (totalMonths - 1),
+            1
+        );
+
+        // Daftar bulan
+        const months = [];
+
+        for (let i = 0; i < totalMonths; i++) {
+
+            const date = new Date(
+                startDate.getFullYear(),
+                startDate.getMonth() + i,
+                1
+            );
+
+            const month = date.getFullYear() + '-' +
+                String(date.getMonth() + 1).padStart(2, '0');
+
+            const monthNames = [
+                'Jan', 'Feb', 'Mar', 'Apr',
+                'Mei', 'Jun', 'Jul', 'Agu',
+                'Sep', 'Okt', 'Nov', 'Des'
+            ];
+
+            months.push({
+                month,
+                label: `${monthNames[date.getMonth()]} ${date.getFullYear()}`
+            });
+        }
+
+        // Batas tanggal
+        const fromDate = `${months[0].month}-01`;
+
+        const nextMonth = new Date(
+            currentDate.getFullYear(),
+            currentDate.getMonth() + 1,
+            1
+        );
+
+        const toDate = nextMonth.getFullYear() + '-' +
+            String(nextMonth.getMonth() + 1).padStart(2, '0') + '-01';
+
+        // Dynamic SUM CASE
+        const monthlyColumns = months.map(m => `
+            SUM(
+                CASE
+                    WHEN DATE_FORMAT(l.gl_date, '%Y-%m') = '${m.month}'
+                    THEN l.total
+                    ELSE 0
+                END
+            ) AS \`${m.month}\`
+        `).join(',');
+
+        const sql = `
+            SELECT
+                c.coa_code AS coaCode,
+                c.coa_name AS coaName,
+                ${monthlyColumns}
+
+            FROM tr_ledger l
+
+            INNER JOIN mst_coa c
+                ON c.coa_id = l.coa_id
+
+            WHERE l.gl_date >= :fromDate
+              AND l.gl_date < :toDate and c.coa_code like '200%'
+
+            GROUP BY
+                c.coa_id,
+                c.coa_code,
+                c.coa_name
+
+            ORDER BY c.coa_code
+        `;
+
+        const rows = await sequelize.query(sql, {
+            replacements: {
+                fromDate,
+                toDate
+            },
+            type: QueryTypes.SELECT
+        });
+
+        // Convert ke format JSON
+        const data = rows.map(row => {
+
+            const monthlyAmounts = {};
+
+            months.forEach(m => {
+                monthlyAmounts[m.month] =
+                    Number(row[m.month] || 0);
+            });
+
+            return {
+                coaCode: row.coaCode,
+                coaName: row.coaName,
+                monthlyAmounts
+            };
+        });
+
+        return {
+            months,
+            data
+        };
+
+    } catch (error) {
+        console.error('Monthly Trend Error:', error);
+
+        throw error;
+    }
+}
 
 async function getMonthlyTrend() {
     try {
@@ -1354,6 +1477,26 @@ app.get('/coaall',auth, async (req, res) => {
   } finally {
     if (connection) await connection.end();
   }
+});
+
+app.get('/monthly-inc-trend', async (req, res) => {
+    try {
+
+        const result = await getMonthlyIncTrend();
+
+        return res.status(200).json({
+            success: true,
+            data: result
+        });
+
+    } catch (error) {
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+
+    }
 });
 
 app.get('/monthly-trend', async (req, res) => {
