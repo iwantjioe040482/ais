@@ -51,10 +51,11 @@ const auth = (req, res, next) => {
 async function getMonthlyTrend() {
     try {
 
-        const totalMonths = 10;
 
         // Bulan sekarang
         const currentDate = new Date();
+
+        const totalMonths = currentDate.getMonth()+1;
 
         // Awal periode
         const startDate = new Date(
