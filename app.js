@@ -295,6 +295,101 @@ async function getMonthlyTrend() {
     }
 }
 
+async function getYearlyIncTrend() {
+   try {
+        const currentDate = new Date();
+
+        const currentYear = currentDate.getFullYear();
+        const totalYears = 5;
+
+        // Daftar tahun: 5 tahun terakhir
+        const years = [];
+
+        for (let i = totalYears - 1; i >= 0; i--) {
+            const year = currentYear - i;
+
+            years.push({
+                year: String(year),
+                label: String(year)
+            });
+        }
+
+        // Batas tanggal
+        const fromDate = `${years[0].year}-01-01`;
+
+        const toDate = `${currentYear + 1}-01-01`;
+
+        // Dynamic SUM CASE berdasarkan tahun
+        const yearlyColumns = years.map(y => `
+            SUM(
+                CASE
+                    WHEN YEAR(l.gl_date) = ${y.year}
+                    THEN l.total
+                    ELSE 0
+                END
+            ) AS \`${y.year}\`
+        `).join(',');
+
+        const sql = `
+            SELECT
+                c.coa_code AS coaCode,
+                c.coa_name AS coaName,
+                ${yearlyColumns}
+
+            FROM tr_ledger l
+
+            INNER JOIN mst_coa c
+                ON c.coa_id = l.coa_id
+
+            WHERE l.gl_date >= :fromDate
+              AND l.gl_date < :toDate
+              AND c.coa_code LIKE '200%'
+
+            GROUP BY
+                c.coa_id,
+                c.coa_code,
+                c.coa_name
+
+            ORDER BY c.coa_code
+        `;
+
+        const rows = await sequelize.query(sql, {
+            replacements: {
+                fromDate,
+                toDate
+            },
+            type: QueryTypes.SELECT
+        });
+
+        // Convert ke format JSON
+        const data = rows.map(row => {
+
+            const yearlyAmounts = {};
+
+            years.forEach(y => {
+                yearlyAmounts[y.year] =
+                    Number(row[y.year] || 0);
+            });
+
+            return {
+                coaCode: row.coaCode,
+                coaName: row.coaName,
+                yearlyAmounts
+            };
+        });
+
+        return {
+            years,
+            data
+        };
+
+    } catch (error) {
+        console.error('Yearly Trend Error:', error);
+        throw error;
+    }
+  }
+
+
 async function getYearlyTrend() {
    try {
         const currentDate = new Date();
@@ -1597,6 +1692,26 @@ app.get('/monthly-trend', async (req, res) => {
     try {
 
         const result = await getMonthlyTrend();
+
+        return res.status(200).json({
+            success: true,
+            data: result
+        });
+
+    } catch (error) {
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+
+    }
+});
+
+app.get('/yearly-inc-trend', async (req, res) => {
+    try {
+
+        const result = await getMonthlyIncTrend();
 
         return res.status(200).json({
             success: true,
