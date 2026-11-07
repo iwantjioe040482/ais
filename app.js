@@ -1711,7 +1711,7 @@ app.get('/monthly-trend', async (req, res) => {
 app.get('/yearly-inc-trend', async (req, res) => {
     try {
 
-        const result = await getMonthlyIncTrend();
+        const result = await getYearlyIncTrend();
 
         return res.status(200).json({
             success: true,
